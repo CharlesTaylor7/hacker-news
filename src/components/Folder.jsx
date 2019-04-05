@@ -1,7 +1,22 @@
 import React, { useState } from 'react';
 import File from './File';
 
-export default ({ folder }) => {
+const getCounter = () => {
+  let count = 0;
+  return () => count++;
+};
+
+const nextItemId = getCounter();
+
+const getItemElement = item => {
+  return item.type === 'FOLDER' ? (
+    <Folder folder={item} />
+  ) : (
+    <File file={item} />
+  );
+};
+
+const Folder = ({ folder }) => {
   const [open, setOpen] = useState(false);
   const [children, setChildren] = useState([]);
   const [addingItem, setAddingItem] = useState(false);
@@ -22,19 +37,19 @@ export default ({ folder }) => {
 
   const itemInput = (
     <ItemInput
-      onSubmit={input => {
+      onSubmit={newItem => {
         setAddingItem(false);
         setOpen(true);
-        setChildren(children => [...children, <File file={{ name: input }} />]);
+        setChildren(children => [...children, getItemElement(newItem)]);
       }}
     />
   );
 
   return (
-    <li key={folder.key} style={{ display: 'inline' }}>
+    <li key={folder.id} style={{ display: 'inline' }}>
       <button
         style={{
-          margin: '10px',
+          marginRight: '10px',
           background: 'grey',
           border: 'none',
           borderRadius: '50%',
@@ -46,22 +61,49 @@ export default ({ folder }) => {
       </button>
       {folder.name}
       {addingItem ? itemInput : newItemButton}
-      <ul style={{ listStyleType: 'none' }}>{open ? children : null}</ul>
+      <ul
+        style={{ listStyleType: 'none', margin: '0' }}
+        display={open ? 'initial' : 'none'}
+      >
+        {children}
+      </ul>
     </li>
   );
 };
 
+export default Folder;
+
 const ItemInput = ({ onSubmit }) => {
   const [input, setInput] = useState('');
   const [isFolder, setIsFolder] = useState(false);
+
+  const onKeyPress = event => {
+    if (event.key === 'Enter') {
+      const name = input;
+      const type = isFolder ? 'FOLDER' : 'FILE';
+      const id = nextItemId();
+      onSubmit({ id, name, type });
+    }
+  };
+
   return (
-    <input
-      type='text'
-      style={{ margin: '10px' }}
-      value={input}
-      autoFocus
-      onChange={event => setInput(event.target.value)}
-      onKeyPress={event => (event.key === 'Enter' ? onSubmit(input) : null)}
-    />
+    <div style={{ display: 'inline' }}>
+      <input
+        type='text'
+        style={{ margin: '10px' }}
+        value={input}
+        placeholder={'Enter file/folder name'}
+        autoFocus
+        onChange={event => setInput(event.target.value)}
+        onKeyPress={onKeyPress}
+      />
+      <input
+        type='checkbox'
+        checked={isFolder}
+        onChange={event => setIsFolder(event.target.checked)}
+        onKeyPress={onKeyPress}
+      />
+      Is Folder?
+    </div>
   );
 };
