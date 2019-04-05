@@ -1,8 +1,6 @@
-import React, { Component } from 'react';
-import logo from '../assets/logo.svg';
+import React from 'react';
 import './App.css';
 import Folder from './Folder';
-import File from './File';
 
 export default () => {
   return (
