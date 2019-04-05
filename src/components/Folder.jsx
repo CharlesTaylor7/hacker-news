@@ -19,31 +19,20 @@ const getItemElement = item => {
 const Folder = ({ folder }) => {
   const [open, setOpen] = useState(false);
   const [children, setChildren] = useState([]);
-  const [addingItem, setAddingItem] = useState(false);
+  const [mode, setMode] = useState('VIEW');
 
-  const newItemButton = (
-    <button
-      style={{
-        margin: '10px',
-        background: 'grey',
-        border: 'none',
-        outline: 'none'
-      }}
-      onClick={() => setAddingItem(true)}
-    >
-      + New Item
-    </button>
-  );
+  const buttonStyle = {
+    marginLeft: '10px',
+    background: 'grey',
+    border: 'none',
+    outline: 'none'
+  };
 
-  const itemInput = (
-    <ItemInput
-      onSubmit={newItem => {
-        setAddingItem(false);
-        setOpen(true);
-        setChildren(children => [...children, getItemElement(newItem)]);
-      }}
-    />
-  );
+  const onSubmit = newItem => {
+    setMode('VIEW');
+    setOpen(true);
+    setChildren(children => [...children, getItemElement(newItem)]);
+  };
 
   return (
     <li style={{ display: 'block' }}>
@@ -60,7 +49,18 @@ const Folder = ({ folder }) => {
         {open ? '-' : '+'}
       </button>
       {folder.name}
-      {addingItem ? itemInput : newItemButton}
+      {mode === 'VIEW' ? (
+        <>
+          <button style={buttonStyle} onClick={() => setMode('FILE')}>
+            + New File
+          </button>
+          <button style={buttonStyle} onClick={() => setMode('FOLDER')}>
+            + New Folder
+          </button>
+        </>
+      ) : (
+        <ItemInput type={mode} onSubmit={onSubmit} />
+      )}
       <ul
         style={{
           listStyleType: 'none',
@@ -76,37 +76,29 @@ const Folder = ({ folder }) => {
 
 export default Folder;
 
-const ItemInput = ({ onSubmit }) => {
+const ItemInput = ({ onSubmit, type }) => {
   const [input, setInput] = useState('');
-  const [isFolder, setIsFolder] = useState(false);
 
   const onKeyPress = event => {
-    if (event.key === 'Enter') {
-      const name = input;
-      const type = isFolder ? 'FOLDER' : 'FILE';
-      const id = nextItemId();
-      onSubmit({ id, name, type });
-    }
+    if (event.key === 'Enter') handleSubmit();
+  };
+
+  const handleSubmit = () => {
+    const name = input;
+    const id = nextItemId();
+    onSubmit({ id, name, type });
   };
 
   return (
-    <div style={{ display: 'inline' }}>
-      <input
-        type='text'
-        style={{ margin: '10px' }}
-        value={input}
-        placeholder={'Enter file/folder name'}
-        autoFocus
-        onChange={event => setInput(event.target.value)}
-        onKeyPress={onKeyPress}
-      />
-      <input
-        type='checkbox'
-        checked={isFolder}
-        onChange={event => setIsFolder(event.target.checked)}
-        onKeyPress={onKeyPress}
-      />
-      Is Folder?
-    </div>
+    <input
+      type='text'
+      style={{ margin: '10px' }}
+      value={input}
+      placeholder={`Enter ${type.toLowerCase()} name`}
+      autoFocus
+      onChange={event => setInput(event.target.value)}
+      onKeyPress={onKeyPress}
+      onBlur={handleSubmit}
+    />
   );
 };
