@@ -10,9 +10,9 @@ const nextItemId = getCounter();
 
 const getItemElement = item => {
   return item.type === 'FOLDER' ? (
-    <Folder folder={item} />
+    <Folder key={item.id} folder={item} />
   ) : (
-    <File file={item} />
+    <File key={item.id} file={item} />
   );
 };
 
@@ -46,7 +46,7 @@ const Folder = ({ folder }) => {
   );
 
   return (
-    <li key={folder.id} style={{ display: 'inline' }}>
+    <li style={{ display: 'block' }}>
       <button
         style={{
           marginRight: '10px',
