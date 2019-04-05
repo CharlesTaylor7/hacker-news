@@ -1,24 +1,32 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import ExpandFolderButton from './components/ExpandFolderButton';
+import Folder from './components/Folder';
+import File from './components/File';
 
+const initialFolder = { name: 'Groceries', type: 'Folder' };
+const initialFile = { name: 'Eggs', type: 'File' };
+const defaultStore = { items: { 0: { name: 'Groceries', type: 'Folder' } } };
+
+// root folder id = 'root'
+// Store: folder id -> [item]
+const StoreContext = React.createContext();
+
+const style = {};
 export default () => {
   return (
     <div className='App'>
-      <header className='App-header'>
-        <img src={logo} className='App-logo' alt='logo' />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className='App-link'
-          href='https://reactjs.org'
-          target='_blank'
-          rel='noopener noreferrer'
-        >
-          Learn React
-        </a>
-      </header>
+      <ul>
+        <File item={{ name: 'stuff' }} />
+        <Folder item={{ name: 'Groceries' }} />
+        <li>
+          <ul>
+            <File item={{ name: 'Eggs' }} />
+            <File item={{ name: 'Bacon' }} />
+          </ul>
+        </li>
+      </ul>
     </div>
   );
 };
