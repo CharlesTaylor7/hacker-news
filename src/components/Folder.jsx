@@ -12,6 +12,7 @@ export default ({ folder }) => {
           borderRadius: '50%',
           outline: 'none'
         }}
+        onClick={() => setOpen(status => !status)}
       >
         {open ? '-' : '+'}
       </button>
