@@ -59,6 +59,7 @@ const ItemInput = ({ onSubmit }) => {
       type='text'
       style={{ margin: '10px' }}
       value={input}
+      autoFocus
       onChange={event => setInput(event.target.value)}
       onKeyPress={event => (event.key === 'Enter' ? onSubmit(input) : null)}
     />
