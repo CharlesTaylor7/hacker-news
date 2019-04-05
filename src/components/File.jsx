@@ -1,8 +1,10 @@
 import React from 'react';
+import reactLogo from '../assets/logo.svg';
 
 export default ({ file }) => {
   return (
-    <li key={file.id} style={{ flex: 'inline' }}>
+    <li style={{ display: 'block' }}>
+      <img src={reactLogo} style={{ height: '17px', marginRight: '10px' }} />
       {file.name}
     </li>
   );
