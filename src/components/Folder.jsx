@@ -62,8 +62,11 @@ const Folder = ({ folder }) => {
       {folder.name}
       {addingItem ? itemInput : newItemButton}
       <ul
-        style={{ listStyleType: 'none', margin: '0' }}
-        display={open ? 'initial' : 'none'}
+        style={{
+          listStyleType: 'none',
+          margin: '0',
+          display: open ? 'block' : 'none'
+        }}
       >
         {children}
       </ul>
