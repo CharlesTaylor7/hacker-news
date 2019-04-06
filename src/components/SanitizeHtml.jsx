@@ -11,6 +11,7 @@ const defaultOptions = {
 
 export default ({ html, options }) => (
   <div
+    style={{ display: 'inline' }}
     dangerouslySetInnerHTML={{
       __html: sanitizeHtml(html, { ...defaultOptions, ...options })
     }}
