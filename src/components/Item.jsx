@@ -24,7 +24,11 @@ const Item = ({ itemId }) => {
       >
         {item && item.kids ? (open ? '-' : '+') : null}
       </button>
-      {item ? item.title || item.text : null}
+      {item.url ? (
+        <a href={item.url}>{item.title}</a>
+      ) : item ? (
+        item.title || item.text
+      ) : null}
       <ul
         style={{
           listStyleType: 'none',
@@ -33,7 +37,7 @@ const Item = ({ itemId }) => {
         }}
       >
         {item && item.kids
-          ? item.kids.map(child => <Item itemId={child} />)
+          ? item.kids.map(child => <Item key={child} itemId={child} />)
           : null}
       </ul>
     </li>
