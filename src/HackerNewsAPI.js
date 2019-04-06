@@ -11,7 +11,9 @@ export const getItem = itemId =>
   fetch(`${rootURL}/item/${itemId}${suffix}`).then(response => response.json());
 
 export const getUpdates = () =>
-  fetch(`${rootURL}/updates${suffix}`).then(response => response.json());
+  fetch(`${rootURL}/updates${suffix}`)
+    .then(response => response.json())
+    .then(json => json.items);
 
 const omit = (prop, { [prop]: _, ...rest }) => rest;
 
@@ -38,12 +40,17 @@ function sleep(ms) {
 }
 
 async function pollEvery(interval, query, onChange) {
-  let previous;
+  let previous = {};
   while (true) {
     const latest = await query();
-    if (latest !== previous) {
-      onChange(latest);
+    if (
+      latest.length && previous.length
+        ? latest.length !== previous.length
+        : latest !== previous
+    ) {
+      console.log(JSON.stringify(latest));
       previous = latest;
+      onChange(latest);
     }
     await sleep(interval);
   }
@@ -51,7 +58,7 @@ async function pollEvery(interval, query, onChange) {
 
 export const usePollForMaxItem = onChange => {
   useEffect(() => {
-    pollEvery(3000, getLatestId, onChange);
+    pollEvery(100000000, getLatestId, onChange);
   }, []);
 };
 

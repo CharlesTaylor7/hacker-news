@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import * as HN from '../HackerNewsAPI';
-import ItemById from './ItemById';
 import Item from './Item';
 
 const AscendItemParents = ({ initialId }) => {

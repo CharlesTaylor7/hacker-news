@@ -8,6 +8,7 @@ const Item = ({ item }) => {
   const expandChildrenButton = <ExpandButton open={open} setOpen={setOpen} />;
   const icon = <img src={reactLogo} height='17px' alt='logo' />;
 
+  const kids = item.kids || [];
   return (
     <li style={{ display: 'block' }}>
       {item.kids ? expandChildrenButton : icon}
@@ -23,9 +24,9 @@ const Item = ({ item }) => {
           display: open ? 'block' : 'none'
         }}
       >
-        {item.kids
-          ? item.kids.map(child => <ItemById key={child} itemId={child} />)
-          : null}
+        {kids.map(child => (
+          <ItemById key={child} itemId={child} />
+        ))}
       </ul>
     </li>
   );
