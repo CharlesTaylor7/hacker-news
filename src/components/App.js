@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import Item from './Item';
-import ItemById from './ItemById';
 import * as HN from '../HackerNewsAPI';
 import AscendItemParents from './AscendItemParents';
 
 export const UpdateContext = React.createContext({});
 
-const topStoriesLimit = 10;
+const topStoriesLimit = 1;
 export const App = () => {
   const [latestId, setLatestId] = useState(null);
   const [ids, setIds] = useState([]);
