@@ -3,11 +3,11 @@ import * as HN from '../HackerNewsAPI';
 import Item from './Item';
 
 const ItemById = ({ itemId }) => {
-  const [item, setItem] = useState({});
+  const [item, setItem] = useState(null);
   const pendingUpdate = HN.usePendingUpdate(itemId);
 
   useEffect(() => {
-    if (!pendingUpdate) return;
+    if (item !== null && !pendingUpdate) return;
     HN.getItem(itemId).then(setItem);
   }, [itemId, pendingUpdate]);
 
