@@ -11,6 +11,6 @@ const ItemById = ({ itemId, initialItem }) => {
     HN.getItem(itemId).then(setItem);
   }, [itemId, pendingUpdate]);
 
-  return item != null ? <Item item={item} /> : null;
+  return item != null && !item.deleted ? <Item item={item} /> : null;
 };
 export default ItemById;
