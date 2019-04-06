@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import * as HN from '../HackerNewsAPI';
-import ItemById from './ItemById';
-
-export const UpdateContext = React.createContext({});
 
 const topStoriesLimit = 20;
 export const App = () => {
@@ -31,9 +28,7 @@ export const App = () => {
 
   return (
     <div className='App'>
-      {/* <UpdateContext.Provider value={{ updates, setUpdates }}> */}
       <header className='App-header'>{items}</header>
-      {/* </UpdateContext.Provider> */}
     </div>
   );
 };

@@ -53,12 +53,7 @@ async function pollEvery(interval, query, onChange) {
   let previous = {};
   while (true) {
     const latest = await query();
-    if (
-      latest.length && previous.length
-        ? latest.length !== previous.length
-        : latest !== previous
-    ) {
-      console.log(JSON.stringify(latest));
+    if (latest !== previous) {
       previous = latest;
       onChange(latest);
     }
@@ -69,11 +64,5 @@ async function pollEvery(interval, query, onChange) {
 export const usePollForMaxItem = onChange => {
   useEffect(() => {
     pollEvery(3000, getLatestId, onChange);
-  }, []);
-};
-
-export const usePollForUpdates = onChange => {
-  useEffect(() => {
-    pollEvery(3000, getUpdates, onChange);
   }, []);
 };
