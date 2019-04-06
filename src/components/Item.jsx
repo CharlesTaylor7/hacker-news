@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import ItemById from './ItemById';
+import SanitizeHtml from './SanitizeHtml';
 import reactLogo from '../assets/logo.svg';
 
 const Item = ({ item }) => {
@@ -15,7 +16,7 @@ const Item = ({ item }) => {
       {item.url ? (
         <a href={item.url}>{item.title}</a>
       ) : item ? (
-        item.title || item.text
+        item.title || <SanitizeHtml html={item.text} />
       ) : null}
       <ul
         style={{
