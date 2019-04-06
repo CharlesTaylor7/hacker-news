@@ -3,6 +3,7 @@ import './App.css';
 import Item from './Item';
 import ItemById from './ItemById';
 import * as HN from '../HackerNewsAPI';
+import AscendItemParents from './AscendItemParents';
 
 export const UpdateContext = React.createContext({});
 
@@ -28,7 +29,7 @@ export const App = () => {
       <UpdateContext.Provider value={{ updates, setUpdates }}>
         <header className='App-header'>
           {ids.map(id => (
-            <ItemById key={id} itemId={id} />
+            <AscendItemParents key={id} initialId={id} />
           ))}
         </header>
       </UpdateContext.Provider>
