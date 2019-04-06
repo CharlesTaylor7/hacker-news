@@ -15,6 +15,16 @@ export const getUpdates = () =>
     .then(response => response.json())
     .then(json => json.items);
 
+export const getRoot = async id => {
+  while (true) {
+    const item = await getItem(id);
+    if (item.parent === undefined) {
+      return item;
+    }
+    id = item.parent;
+  }
+};
+
 const omit = (prop, { [prop]: _, ...rest }) => rest;
 
 const getCounter = () => {

@@ -1,39 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import * as HN from '../HackerNewsAPI';
-import AscendItemParents from './AscendItemParents';
+import ItemById from './ItemById';
 
 export const UpdateContext = React.createContext({});
 
 const topStoriesLimit = 20;
 export const App = () => {
   const [latestId, setLatestId] = useState(null);
-  const [ids, setIds] = useState([]);
-  const [updates, setUpdates] = useState({});
+  const [items, setItems] = useState(new Set());
 
   HN.usePollForMaxItem(setLatestId);
-  HN.usePollForUpdates(updates => {
-    setUpdates(us => ({ ...updates.items, ...us }));
-  });
 
   useEffect(() => {
     if (latestId === null) return;
-    const ids = [];
-    for (let i = 0; i < topStoriesLimit; i++) {
-      ids.push(latestId - i);
+    Promise.all(addNextStory());
+    function* addNextStory() {
+      for (let i = 0; ; i++) {
+        yield HN.getRoot(latestId - i).then(item =>
+          setItems(items => {
+            if (items.size >= topStoriesLimit) return items;
+            const copy = Set(items);
+            copy.add(item);
+            return copy;
+          })
+        );
+      }
     }
-    setIds(ids);
   }, [latestId]);
 
   return (
     <div className='App'>
-      <UpdateContext.Provider value={{ updates, setUpdates }}>
-        <header className='App-header'>
-          {ids.map(id => (
-            <AscendItemParents key={id} initialId={id} />
-          ))}
-        </header>
-      </UpdateContext.Provider>
+      {/* <UpdateContext.Provider value={{ updates, setUpdates }}> */}
+      <header className='App-header'>{items}</header>
+      {/* </UpdateContext.Provider> */}
     </div>
   );
 };
