@@ -25,9 +25,9 @@ const Item = ({ item }) => {
       {item.kids ? expandChildrenButton : icon}
       {item.url ? (
         <a href={item.url}>{item.title}</a>
-      ) : item ? (
+      ) : (
         item.title || <SanitizeHtml html={item.text} />
-      ) : null}
+      )}
       <ul
         style={{
           listStyleType: 'none',
@@ -35,6 +35,7 @@ const Item = ({ item }) => {
           display: open ? 'block' : 'none'
         }}
       >
+        {item.title && item.text ? <SanitizeHtml html={item.text} /> : null}
         {children.map(child => (
           <Item key={child.id} item={child} />
         ))}

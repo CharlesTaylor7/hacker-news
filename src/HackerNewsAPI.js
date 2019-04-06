@@ -17,6 +17,9 @@ export const getUpdates = () =>
 export const getRoot = async id => {
   while (true) {
     const item = await getItem(id);
+    if (item === null) {
+      return null;
+    }
     if (item.parent === undefined) {
       return item;
     }

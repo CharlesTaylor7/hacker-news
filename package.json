@@ -7,7 +7,8 @@
     "react-dom": "^16.8.6",
     "react-scripts": "2.1.8",
     "sanitize-html": "^1.20.0",
-    "xstream": "^11.10.0"
+    "xstream": "^11.10.0",
+    "immutable-sorted": "^0.2.11"
   },
   "scripts": {
     "start": "react-scripts start",
