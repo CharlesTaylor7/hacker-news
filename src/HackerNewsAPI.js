@@ -1,4 +1,4 @@
-import { useEffect, useContext } from 'react';
+import { useEffect } from 'react';
 
 const rootURL = 'https://hacker-news.firebaseio.com/v0';
 const suffix = '.json';

@@ -14,20 +14,20 @@ export const App = () => {
 
   const produceLatest = {
     start: async function(listener) {
-      this.continue = true;
       if (latestId === null) return;
-      for (let i = 0; this.continue; i++) {
+      this.continue = true;
+      this.limit = topStoriesLimit;
+      for (let i = 0; this.continue && this.limit > 0; i++) {
         const item = await HN.getRoot(latestId - i);
         if (item != null && !item.deleted) {
-          // console.log('Pushing item onto stream: ' + JSON.stringify(item));
           listener.next(item);
+          this.limit--;
         }
       }
     },
     stop: function() {
       this.continue = false;
-    },
-    continue: true
+    }
   };
 
   const elements = useReducerOverStream(
@@ -35,8 +35,6 @@ export const App = () => {
     SortedMap([], (a, b) => b - a),
     (elements, item) => {
       const element = <Item key={item.id} item={item} />;
-      if (elements.size >= topStoriesLimit) return elements;
-
       return elements.set(item.id, element);
     },
     [latestId]
