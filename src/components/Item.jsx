@@ -1,24 +1,16 @@
 import React, { useState } from 'react';
 import ItemById from './ItemById';
+import reactLogo from '../assets/logo.svg';
 
 const Item = ({ item }) => {
   const [open, setOpen] = useState(false);
 
+  const expandChildrenButton = <ExpandButton open={open} setOpen={setOpen} />;
+  const icon = <img src={reactLogo} height='17px' alt='logo' />;
+
   return (
     <li style={{ display: 'block' }}>
-      <button
-        style={{
-          marginRight: '10px',
-          background: 'grey',
-          borderRadius: '50%',
-          outline: 'none',
-          border: '0',
-          padding: '0'
-        }}
-        onClick={() => setOpen(status => !status)}
-      >
-        {item.kids ? (open ? '-' : '+') : null}
-      </button>
+      {item.kids ? expandChildrenButton : icon}
       {item.url ? (
         <a href={item.url}>{item.title}</a>
       ) : item ? (
@@ -40,3 +32,19 @@ const Item = ({ item }) => {
 };
 
 export default Item;
+
+const ExpandButton = ({ open, setOpen }) => (
+  <button
+    style={{
+      marginRight: '10px',
+      background: 'grey',
+      borderRadius: '50%',
+      outline: 'none',
+      border: '0',
+      padding: '0'
+    }}
+    onClick={() => setOpen(status => !status)}
+  >
+    {open ? '-' : '+'}
+  </button>
+);
