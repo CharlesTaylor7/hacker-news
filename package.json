@@ -5,8 +5,7 @@
   "dependencies": {
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-scripts": "2.1.8",
-    "react-data-fetching": "^0.2.4"
+    "react-scripts": "2.1.8"
   },
   "scripts": {
     "start": "react-scripts start",

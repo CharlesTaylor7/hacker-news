@@ -1,21 +1,19 @@
-import React from 'react';
-
 const rootURL = 'https://hacker-news.firebaseio.com/v0';
 const suffix = '.json';
 
 export const getMaxItem = () =>
   fetch(`${rootURL}/maxitem${suffix}`).then(response => response.json());
 
-const getItem = itemId => {
+export const getItem = itemId => {
   console.log(`Requesting item: ${itemId}`);
   return fetch(`${rootURL}/item/${itemId}${suffix}`).then(response =>
     response.json()
   );
 };
 
-export const getLatestStory = () =>
+export const getLatestStories = n =>
   getMaxItem().then(itemId => {
-    return first(requestItems(), item => item.type === 'story');
+    return take(requestItems(), item => item.type === 'story', n);
 
     function* requestItems() {
       for (; ; itemId--) {
@@ -24,7 +22,7 @@ export const getLatestStory = () =>
     }
   });
 
-const first = async (promises, predicate) => {
+const take = async (promises, predicate, n) => {
   for await (const result of promises) {
     if (predicate(result)) return result;
   }
