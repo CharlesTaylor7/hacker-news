@@ -1,5 +1,4 @@
 import { useEffect, useContext } from 'react';
-import { UpdateContext } from './components/App';
 
 const rootURL = 'https://hacker-news.firebaseio.com/v0';
 const suffix = '.json';
@@ -23,26 +22,6 @@ export const getRoot = async id => {
     }
     id = item.parent;
   }
-};
-
-const omit = (prop, { [prop]: _, ...rest }) => rest;
-
-const getCounter = () => {
-  let count = 0;
-  return () => count++;
-};
-
-const nextUpdateVersion = getCounter();
-
-// hook for updates
-export const usePendingUpdate = id => {
-  const { updates, setUpdates } = useContext(UpdateContext);
-  if (updates[id] !== undefined) {
-    setUpdates(us => omit(id, us));
-    console.log('Update for ' + id);
-    return nextUpdateVersion();
-  }
-  return false;
 };
 
 function sleep(ms) {

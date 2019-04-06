@@ -1,15 +1,25 @@
-import React, { useState } from 'react';
-import ItemById from './ItemById';
+import React, { useState, useEffect } from 'react';
 import SanitizeHtml from './SanitizeHtml';
 import reactLogo from '../assets/logo.svg';
+import * as HN from '../HackerNewsAPI';
 
 const Item = ({ item }) => {
   const [open, setOpen] = useState(false);
+  const [children, setChildren] = useState([]);
+  const kids = item.kids || [];
+
+  useEffect(() => {
+    for (const childId of kids) {
+      HN.getItem(childId).then(item =>
+        setChildren(children => [...children, item])
+      );
+    }
+  }, []);
+  if (item.deleted) return null;
 
   const expandChildrenButton = <ExpandButton open={open} setOpen={setOpen} />;
   const icon = <img src={reactLogo} height='17px' alt='logo' />;
 
-  const kids = item.kids || [];
   return (
     <li style={{ display: 'block' }}>
       {item.kids ? expandChildrenButton : icon}
@@ -25,8 +35,8 @@ const Item = ({ item }) => {
           display: open ? 'block' : 'none'
         }}
       >
-        {kids.map(child => (
-          <ItemById key={child} itemId={child} />
+        {children.map(child => (
+          <Item key={child.id} item={child} />
         ))}
       </ul>
     </li>
