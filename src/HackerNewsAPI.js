@@ -7,12 +7,8 @@ const suffix = '.json';
 export const getLatestId = () =>
   fetch(`${rootURL}/maxitem${suffix}`).then(response => response.json());
 
-export const getItem = itemId => {
-  console.log(`Requesting item: ${itemId}`);
-  return fetch(`${rootURL}/item/${itemId}${suffix}`).then(response =>
-    response.json()
-  );
-};
+export const getItem = itemId =>
+  fetch(`${rootURL}/item/${itemId}${suffix}`).then(response => response.json());
 
 export const getUpdates = () =>
   fetch(`${rootURL}/updates${suffix}`).then(response => response.json());
@@ -31,6 +27,7 @@ export const usePendingUpdate = id => {
   const { updates, setUpdates } = useContext(UpdateContext);
   if (updates[id] !== undefined) {
     setUpdates(us => omit(id, us));
+    console.log('Update for ' + id);
     return nextUpdateVersion();
   }
   return false;
@@ -40,12 +37,11 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function pollEvery(interval, onChange) {
+async function pollEvery(interval, query, onChange) {
   let previous;
   while (true) {
-    const latest = await getLatestId();
+    const latest = await query();
     if (latest !== previous) {
-      console.log('latest id changed to: ' + latest);
       onChange(latest);
       previous = latest;
     }
@@ -55,6 +51,12 @@ async function pollEvery(interval, onChange) {
 
 export const usePollForMaxItem = onChange => {
   useEffect(() => {
-    pollEvery(3000, onChange);
+    pollEvery(3000, getLatestId, onChange);
+  }, []);
+};
+
+export const usePollForUpdates = onChange => {
+  useEffect(() => {
+    pollEvery(3000, getUpdates, onChange);
   }, []);
 };

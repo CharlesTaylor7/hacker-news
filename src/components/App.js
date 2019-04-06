@@ -5,13 +5,16 @@ import AscendItemParents from './AscendItemParents';
 
 export const UpdateContext = React.createContext({});
 
-const topStoriesLimit = 1;
+const topStoriesLimit = 11;
 export const App = () => {
   const [latestId, setLatestId] = useState(null);
   const [ids, setIds] = useState([]);
   const [updates, setUpdates] = useState({});
 
   HN.usePollForMaxItem(setLatestId);
+  HN.usePollForUpdates(updates => {
+    setUpdates(us => ({ ...updates.items, ...us }));
+  });
 
   useEffect(() => {
     if (latestId === null) return;

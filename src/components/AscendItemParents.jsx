@@ -10,9 +10,7 @@ const AscendItemParents = ({ initialId }) => {
   useEffect(() => {
     HN.getItem(id).then(item => {
       setItem(item);
-      console.log('got ' + JSON.stringify(item));
       if (item.parent !== undefined) {
-        console.log('ascending to parent ' + item.parent);
         setId(item.parent);
       }
     });
