@@ -40,8 +40,7 @@ const ExpandButton = ({ open, setOpen }) => (
       background: 'grey',
       borderRadius: '50%',
       outline: 'none',
-      border: '0',
-      padding: '0'
+      border: '0'
     }}
     onClick={() => setOpen(status => !status)}
   >

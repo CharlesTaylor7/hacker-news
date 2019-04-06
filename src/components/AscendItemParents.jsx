@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import * as HN from '../HackerNewsAPI';
 import ItemById from './ItemById';
+import Item from './Item';
 
 const AscendItemParents = ({ initialId }) => {
   const [item, setItem] = useState(null);
@@ -17,6 +18,6 @@ const AscendItemParents = ({ initialId }) => {
     });
   }, [id]);
 
-  return <ItemById itemId={id} item={item} />;
+  return item !== null ? <Item item={item} /> : null;
 };
 export default AscendItemParents;
