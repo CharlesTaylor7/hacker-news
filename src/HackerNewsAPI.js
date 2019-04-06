@@ -58,7 +58,7 @@ async function pollEvery(interval, query, onChange) {
 
 export const usePollForMaxItem = onChange => {
   useEffect(() => {
-    pollEvery(100000000, getLatestId, onChange);
+    pollEvery(3000, getLatestId, onChange);
   }, []);
 };
 

@@ -4,7 +4,7 @@ import SanitizeHtml from './SanitizeHtml';
 import reactLogo from '../assets/logo.svg';
 
 const Item = ({ item }) => {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   const expandChildrenButton = <ExpandButton open={open} setOpen={setOpen} />;
   const icon = <img src={reactLogo} height='17px' alt='logo' />;
