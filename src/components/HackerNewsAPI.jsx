@@ -1,7 +1,7 @@
 const rootURL = 'https://hacker-news.firebaseio.com/v0';
 const suffix = '.json';
 
-export const getMaxItem = () =>
+export const getLatestId = () =>
   fetch(`${rootURL}/maxitem${suffix}`).then(response => response.json());
 
 export const getItem = itemId => {
@@ -12,7 +12,7 @@ export const getItem = itemId => {
 };
 
 export const getLatestStories = n =>
-  getMaxItem().then(itemId => {
+  getLatestId().then(itemId => {
     return take(requestItems(), item => item.type === 'story', n);
 
     function* requestItems() {
