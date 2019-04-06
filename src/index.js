@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './components/App';
 import * as serviceWorker from './serviceWorker';
+import * as HN from './components/HackerNewsAPI';
+
+HN.getLatestStory().then(console.log);
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
