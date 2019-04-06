@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import Item from './Item';
-import * as HN from './HackerNewsAPI';
+import * as HN from '../HackerNewsAPI';
+
+export const UpdateContext = React.createContext({});
 
 const topStoriesLimit = 10;
-export default () => {
+export const App = () => {
   const [latestId, setLatestId] = useState(null);
-  const [ids, setIds] = useState([]);
+  const [stories, setStories] = useState([]);
+  const [updates, setUpdates] = useState({});
 
   useEffect(() => {
     HN.getLatestId().then(setLatestId);
@@ -14,27 +17,28 @@ export default () => {
 
   useEffect(() => {
     if (latestId === null) return;
-    async function Me() {
-      if (ids.length >= topStoriesLimit) return;
+    async function getNextStory() {
+      if (stories.length >= topStoriesLimit) return;
       for (let id = latestId; ; id--) {
         const item = await HN.getItem(id);
-        console.log('item ' + id + ' ' + JSON.stringify(item));
         if (item.type === 'story') {
-          setIds(ids => [...ids, id]);
+          setStories(stories => [...stories, item]);
           setLatestId(id - 1);
           return;
         }
       }
     }
-    Me();
+    getNextStory();
   }, [latestId]);
   return (
     <div className='App'>
-      <header className='App-header'>
-        {ids.map(itemId => (
-          <Item key={itemId} itemId={itemId} />
-        ))}
-      </header>
+      <UpdateContext.Provider value={{ updates, setUpdates }}>
+        <header className='App-header'>
+          {stories.map(story => (
+            <Item key={story.id} item={story} />
+          ))}
+        </header>
+      </UpdateContext.Provider>
     </div>
   );
 };

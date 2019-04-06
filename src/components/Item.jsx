@@ -1,14 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import * as HN from './HackerNewsAPI';
+import React, { useState } from 'react';
+import ItemById from './ItemById';
 
-const Item = ({ itemId }) => {
+const Item = ({ item }) => {
   const [open, setOpen] = useState(false);
-  const [item, setItem] = useState({});
-
-  // Load content
-  useEffect(() => {
-    HN.getItem(itemId).then(setItem);
-  }, [itemId]);
 
   return (
     <li style={{ display: 'block' }}>
@@ -22,7 +16,7 @@ const Item = ({ itemId }) => {
         }}
         onClick={() => setOpen(status => !status)}
       >
-        {item && item.kids ? (open ? '-' : '+') : null}
+        {item.kids ? (open ? '-' : '+') : null}
       </button>
       {item.url ? (
         <a href={item.url}>{item.title}</a>
@@ -36,8 +30,8 @@ const Item = ({ itemId }) => {
           display: open ? 'block' : 'none'
         }}
       >
-        {item && item.kids
-          ? item.kids.map(child => <Item key={child} itemId={child} />)
+        {item.kids
+          ? item.kids.map(child => <ItemById key={child} itemId={child} />)
           : null}
       </ul>
     </li>
