@@ -9,19 +9,19 @@ export default () => {
   const [ids, setIds] = useState([]);
 
   useEffect(() => {
-    HN.getLatestId().then(maxId => setLatestId(maxId + 1));
+    HN.getLatestId().then(setLatestId);
   }, []);
 
   useEffect(() => {
     if (latestId === null) return;
     async function Me() {
       if (ids.length >= topStoriesLimit) return;
-      for (let id = latestId - 1; ; id--) {
+      for (let id = latestId; ; id--) {
         const item = await HN.getItem(id);
         console.log('item ' + id + ' ' + JSON.stringify(item));
         if (item.type === 'story') {
           setIds(ids => [...ids, id]);
-          setLatestId(id);
+          setLatestId(id - 1);
           return;
         }
       }
