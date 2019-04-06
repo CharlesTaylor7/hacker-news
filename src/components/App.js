@@ -12,9 +12,7 @@ export const App = () => {
   const [ids, setIds] = useState([]);
   const [updates, setUpdates] = useState({});
 
-  useEffect(() => {
-    HN.getLatestId().then(setLatestId);
-  }, []);
+  HN.usePollForMaxItem(setLatestId);
 
   useEffect(() => {
     if (latestId === null) return;
@@ -24,6 +22,7 @@ export const App = () => {
     }
     setIds(ids);
   }, [latestId]);
+
   return (
     <div className='App'>
       <UpdateContext.Provider value={{ updates, setUpdates }}>

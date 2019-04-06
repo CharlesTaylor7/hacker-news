@@ -10,9 +10,10 @@ const Item = ({ item }) => {
         style={{
           marginRight: '10px',
           background: 'grey',
-          border: 'none',
           borderRadius: '50%',
-          outline: 'none'
+          outline: 'none',
+          border: '0',
+          padding: '0'
         }}
         onClick={() => setOpen(status => !status)}
       >
