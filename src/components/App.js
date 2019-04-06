@@ -5,7 +5,7 @@ import AscendItemParents from './AscendItemParents';
 
 export const UpdateContext = React.createContext({});
 
-const topStoriesLimit = 12;
+const topStoriesLimit = 20;
 export const App = () => {
   const [latestId, setLatestId] = useState(null);
   const [ids, setIds] = useState([]);
