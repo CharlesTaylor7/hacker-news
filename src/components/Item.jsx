@@ -10,9 +10,10 @@ const Item = ({ item }) => {
 
   useEffect(() => {
     for (const childId of kids) {
-      HN.getItem(childId).then(item =>
-        setChildren(children => [...children, item])
-      );
+      HN.getItem(childId).then(item => {
+        if (!item || item.deleted) return;
+        setChildren(children => [...children, item]);
+      });
     }
   }, []);
   if (item.deleted) return null;
