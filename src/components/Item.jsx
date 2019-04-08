@@ -6,9 +6,18 @@ import * as HN from '../HackerNewsAPI';
 const Item = ({ item }) => {
   const [open, setOpen] = useState(false);
   const [children, setChildren] = useState([]);
+  const [pollOpts, setPollOpts] = useState([]);
   const kids = item.kids || [];
 
   useEffect(() => {
+    // if item has poll options, get all the poll options simulataneously.
+    if (item.parts) {
+      Promise.all(item.parts.map(pollOptId => HN.getItem(pollOptId))).then(
+        setPollOpts
+      );
+    }
+
+    // if item has children, load them in one at a time.
     for (const childId of kids) {
       HN.getItem(childId).then(item => {
         if (!item || item.deleted) return;
@@ -16,6 +25,7 @@ const Item = ({ item }) => {
       });
     }
   }, []);
+
   if (item.deleted) return null;
 
   const expandChildrenButton = <ExpandButton open={open} setOpen={setOpen} />;
@@ -37,6 +47,7 @@ const Item = ({ item }) => {
         }}
       >
         {item.title && item.text ? <SanitizeHtml html={item.text} /> : null}
+        {pollOpts.map(pollOpt => `* ${pollOpt.text}`)}
         {children.map(child => (
           <Item key={child.id} item={child} />
         ))}
