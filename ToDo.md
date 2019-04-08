@@ -1,1 +1,6 @@
-- Push notifications for updating items
+- Push notifications.
+- Poll options.
+- Show poll scores.
+- Collapse Comment Text, alongside responses.
+- Show comment scores.
+- Show comment & post authorship.
