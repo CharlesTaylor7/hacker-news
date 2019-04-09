@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import SanitizeHtml from './SanitizeHtml';
 import reactLogo from '../assets/logo.svg';
 import * as HN from '../HackerNewsAPI';
+import PercentageBar from './PercentageBar';
 
-const Item = ({ item }) => {
+const Item = ({ item, percentage }) => {
   const [open, setOpen] = useState(false);
   const [children, setChildren] = useState([]);
   const [pollOpts, setPollOpts] = useState([]);
@@ -36,6 +37,11 @@ const Item = ({ item }) => {
 
   if (item.deleted) return null;
 
+  const totalPollScore = pollOpts.reduce(
+    (total, next) => total + next.score,
+    0
+  );
+
   const expandChildrenButton = <ExpandButton open={open} setOpen={setOpen} />;
   const icon = <img src={reactLogo} height='17px' alt='logo' />;
 
@@ -47,6 +53,12 @@ const Item = ({ item }) => {
       {open && item.title && item.text ? (
         <SanitizeHtml html={item.text} />
       ) : null}
+      {percentage ? (
+        <>
+          <PercentageBar percentage={percentage} />
+          <br />
+        </>
+      ) : null}
       <ul
         style={{
           listStyleType: 'none',
@@ -55,7 +67,11 @@ const Item = ({ item }) => {
         }}
       >
         {pollOpts.map(pollOpt => (
-          <Item key={pollOpt.id} item={pollOpt} />
+          <Item
+            key={pollOpt.id}
+            item={pollOpt}
+            percentage={pollOpt.score / totalPollScore}
+          />
         ))}
         {children.map(child => (
           <Item key={child.id} item={child} />
