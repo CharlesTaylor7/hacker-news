@@ -12,9 +12,17 @@ const Item = ({ item }) => {
   useEffect(() => {
     // if item has poll options, get all the poll options simulataneously.
     if (item.parts) {
-      Promise.all(item.parts.map(pollOptId => HN.getItem(pollOptId))).then(
-        setPollOpts
-      );
+      Promise.all(
+        item.parts.map(part =>
+          HN.getItem(part).then(part => {
+            console.log('part retrieved ' + JSON.stringify(part));
+            return part;
+          })
+        )
+      ).then(allParts => {
+        console.log('All Parts received');
+        setPollOpts(allParts);
+      });
     }
 
     // if item has children, load them in one at a time.
@@ -47,7 +55,9 @@ const Item = ({ item }) => {
         }}
       >
         {item.title && item.text ? <SanitizeHtml html={item.text} /> : null}
-        {pollOpts.map(pollOpt => `* ${pollOpt.text}`)}
+        {pollOpts.map(pollOpt => (
+          <Item key={pollOpt.id} item={pollOpt} />
+        ))}
         {children.map(child => (
           <Item key={child.id} item={child} />
         ))}
