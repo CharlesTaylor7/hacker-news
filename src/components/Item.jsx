@@ -42,8 +42,11 @@ const Item = ({ item }) => {
   return (
     <li style={{ display: 'block' }}>
       {item.kids || item.parts ? expandChildrenButton : icon}
-      {item.url ? <a href={item.url}>{item.title}</a> : item.title}
-      {item.text ? <SanitizeHtml html={item.text} /> : null}
+      {item.url ? <a href={item.url}>{item.title}</a> : item.title || item.text}
+      <br />
+      {open && item.title && item.text ? (
+        <SanitizeHtml html={item.text} />
+      ) : null}
       <ul
         style={{
           listStyleType: 'none',
