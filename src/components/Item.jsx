@@ -47,7 +47,11 @@ const Item = ({ item }) => {
   return (
     <li style={{ display: 'block' }}>
       {item.kids || item.parts ? expandChildrenButton : icon}
-      {item.url ? <a href={item.url}>{item.title}</a> : item.title || item.text}
+      {item.url ? (
+        <a href={item.url}>{item.title}</a>
+      ) : (
+        item.title || <SanitizeHtml html={item.text} />
+      )}
       <br />
       {open && item.title && item.text ? (
         <SanitizeHtml html={item.text} />
