@@ -1,28 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import SanitizeHtml from './SanitizeHtml';
-import reactLogo from '../assets/logo.svg';
 import * as HN from '../HackerNewsAPI';
-import PercentageBar from './PercentageBar';
+import PollOption from './PollOption';
+import ReactLogo from './ReactLogo';
 
-const Item = ({ item, percentage }) => {
+const Item = ({ item }) => {
   const [open, setOpen] = useState(false);
   const [children, setChildren] = useState([]);
   const [pollOpts, setPollOpts] = useState([]);
   const kids = item.kids || [];
 
   useEffect(() => {
-    // if item has poll options, get all the poll options simulataneously.
+    // if item has poll options, get all the poll options simultaneously.
     if (item.parts) {
-      Promise.all(
-        item.parts.map(part =>
-          HN.getItem(part).then(part => {
-            console.log('part retrieved ' + JSON.stringify(part));
-            return part;
-          })
-        )
-      ).then(allParts => {
-        console.log('All Parts received');
-        setPollOpts(allParts);
+      Promise.all(item.parts.map(HN.getItem)).then(allParts => {
+        const totalPollScore = allParts.reduce(
+          (total, next) => total + next.score,
+          0
+        );
+        setPollOpts(
+          allParts.map(pollOpt => (
+            <PollOption
+              key={pollOpt.id}
+              item={pollOpt}
+              totalPollScore={totalPollScore}
+            />
+          ))
+        );
       });
     }
 
@@ -37,13 +41,8 @@ const Item = ({ item, percentage }) => {
 
   if (item.deleted) return null;
 
-  const totalPollScore = pollOpts.reduce(
-    (total, next) => total + next.score,
-    0
-  );
-
   const expandChildrenButton = <ExpandButton open={open} setOpen={setOpen} />;
-  const icon = <img src={reactLogo} height='17px' alt='logo' />;
+  const icon = <ReactLogo />;
 
   return (
     <li style={{ display: 'block' }}>
@@ -53,12 +52,6 @@ const Item = ({ item, percentage }) => {
       {open && item.title && item.text ? (
         <SanitizeHtml html={item.text} />
       ) : null}
-      {percentage ? (
-        <>
-          <PercentageBar percentage={percentage} />
-          <br />
-        </>
-      ) : null}
       <ul
         style={{
           listStyleType: 'none',
@@ -66,13 +59,7 @@ const Item = ({ item, percentage }) => {
           display: open ? 'block' : 'none'
         }}
       >
-        {pollOpts.map(pollOpt => (
-          <Item
-            key={pollOpt.id}
-            item={pollOpt}
-            percentage={pollOpt.score / totalPollScore}
-          />
-        ))}
+        {pollOpts}
         {children.map(child => (
           <Item key={child.id} item={child} />
         ))}
