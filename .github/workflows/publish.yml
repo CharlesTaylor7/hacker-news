@@ -1,0 +1,30 @@
+name: Deploy
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/**
+      - src/**
+      - index.html
+
+jobs:
+  deploy:
+    name: Deploy to Github Pages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+
+      - name: Build
+        run: |
+          yarn
+          npx vite build
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: dist
