@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import './App.css';
 import * as HN from '../HackerNewsAPI';
 import useReducerOverStream from '../hooks/useReducerOverStream';
@@ -9,24 +9,21 @@ import { SortedMap } from 'immutable-sorted';
 let count = 0;
 
 export const App = () => {
-  const [latestId, setLatestId] = useState(16809398);
-  // const previousId = useRef(null);
+  const [latestId, setLatestId] = useState(null);
+  const previousId = useRef(null);
 
-  // useEffect(() => {
-  //   HN.getLatestId().then(setLatestId);
-  // }, []);
-  // HN.usePollForMaxItem(newId => {
-  //   previousId.current = latestId;
-  //   setLatestId(newId);
-  // });
+  HN.usePollForMaxItem(newId => {
+    previousId.current = latestId;
+    setLatestId(newId);
+  });
 
   const produceLatest = {
     start: async function(listener) {
       if (latestId === null) return;
       this.version = ++count;
-      // const lowerBound = previousId.current || latestId - 20;
+      const lowerBound = previousId.current || latestId - 20;
       this.continue = true;
-      for (let i = latestId; this.continue; i--) {
+      for (let i = latestId; this.continue && i > lowerBound; i--) {
         const item = await HN.getRoot(i);
         if (item != null && !item.deleted) {
           console.log(
@@ -37,10 +34,7 @@ export const App = () => {
               ' type of ' +
               item.type
           );
-          if (item.type === 'poll') {
-            listener.next(item);
-            break;
-          }
+          listener.next(item);
         }
       }
     },
