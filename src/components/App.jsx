@@ -53,7 +53,7 @@ export const App = () => {
   );
 
   return (
-    <div className='App'>
+    <div>
       <header className='App-header'>{elements.valueSeq()}</header>
     </div>
   );
