@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import * as HN from '../HackerNewsAPI';
 import useReducerOverStream from '../hooks/useReducerOverStream';
 import stream from 'xstream';
@@ -11,10 +11,15 @@ export const App = () => {
   const [latestId, setLatestId] = useState(null);
   const previousId = useRef(null);
 
-  HN.usePollForMaxItem(newId => {
-    previousId.current = latestId;
-    setLatestId(newId);
-  });
+  useEffect(() => {
+    const source = new EventSource('https://hacker-news.firebaseio.com/v0/maxitem.json');
+
+    source.addEventListener("put", (event) => {
+      previousId.current = latestId;
+      const json = JSON.parse(event.data);
+      setLatestId(json.data);
+    });
+  }, []);
 
   const produceLatest = {
     start: async function(listener) {

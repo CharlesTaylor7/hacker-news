@@ -15,6 +15,9 @@ An alternative frontend to read hackernews. Uses the [public API](https://github
     - Font size
     - expand / collapse button needs to be more button like
     - buttons need to be inline with text
+
+- firebase notifications for changes
+
     
 ## Ideas
 - Autoload new comments
