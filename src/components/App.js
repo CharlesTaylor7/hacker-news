@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react';
-import './App.css';
 import * as HN from '../HackerNewsAPI';
 import useReducerOverStream from '../hooks/useReducerOverStream';
 import stream from 'xstream';
