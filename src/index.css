@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .btn {
+    min-height: revert;
+  }
+}
 .App-header {
   background-color: #282c34;
   min-height: 100vh;

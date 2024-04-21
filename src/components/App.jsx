@@ -8,14 +8,13 @@ export const App = () => {
   const previousId = useRef(null);
   const [items, setItems] = useState(SortedMap([], (a, b) => b - a));
 
-  /*
   useEffect(() => {
     const source = new EventSource('https://hacker-news.firebaseio.com/v0/maxitem.json');
 
     source.addEventListener("put", (event) => {
       const json = JSON.parse(event.data);
       let end = json.data;
-      let start = previousId.current || (end - 20);
+      let start = previousId.current || (end - 100);
       previousId.current = end;
 
       if (start !== null) {
@@ -28,7 +27,6 @@ export const App = () => {
       }
     });
   }, []);
-  */
 
   return (
     <div>

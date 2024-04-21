@@ -4,7 +4,7 @@ import * as HN from '../HackerNewsAPI';
 import PollOption from './PollOption';
 import ReactLogo from './ReactLogo';
 
-const Item = ({ item }) => {
+export default function Item({ item }) {
   const [open, setOpen] = useState(false);
   const [children, setChildren] = useState([]);
   const [pollOpts, setPollOpts] = useState([]);
@@ -39,46 +39,32 @@ const Item = ({ item }) => {
     }
   }, []);
 
-  if (item.deleted) return null;
-
-  const expandChildrenButton = <ExpandButton open={open} setOpen={setOpen} />;
-  const icon = <ReactLogo />;
+  if (item.deleted || item.dead) return null;
 
   return (
-    <li style={{ display: 'block' }}>
-      {item.kids || item.parts ? expandChildrenButton : icon}
-      {item.url ? <a href={item.url} target='_blank' rel='no-referrer' >{item.title}</a> : item.title || item.text}
+    <div data-id={item.id} data-item={JSON.stringify(item)}>
+      <ExpandButton open={open} setOpen={setOpen} />
+      {item.url ? <a className="underline decoration-sky-300 visited:decoration-violet-400" href={item.url} target='_blank' rel='no-referrer' >{item.title}</a> : item.title || item.text}
       <br />
       {open && item.title && item.text ? (
         <SanitizeHtml html={item.text} />
       ) : null}
-      <ul
-        style={{
-          listStyleType: 'none',
-          margin: '0',
-          display: open ? 'block' : 'none'
-        }}
+      <div
+        className={`ml-2 ${open ? '' : 'hidden'}`}
       >
         {pollOpts}
         {children.map(child => (
           <Item key={child.id} item={child} />
         ))}
-      </ul>
-    </li>
+      </div>
+    </div>
   );
 };
 
-export default Item;
 
 const ExpandButton = ({ open, setOpen }) => (
   <button
-    style={{
-      marginRight: '10px',
-      background: 'grey',
-      borderRadius: '50%',
-      outline: 'none',
-      border: '0'
-    }}
+    className='btn btn-primary rounded-full h-8 w-8 m-2 min-h-revert'
     onClick={() => setOpen(status => !status)}
   >
     {open ? '-' : '+'}
