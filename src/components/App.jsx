@@ -8,6 +8,7 @@ export const App = () => {
   const previousId = useRef(null);
   const [items, setItems] = useState(SortedMap([], (a, b) => b - a));
 
+  /*
   useEffect(() => {
     const source = new EventSource('https://hacker-news.firebaseio.com/v0/maxitem.json');
 
@@ -27,10 +28,11 @@ export const App = () => {
       }
     });
   }, []);
+  */
 
   return (
     <div>
-      <header className='App-header'>
+      <header className='p-0 App-header'>
         {items.toArray().map(([_, item]) => <Item key={item.id} item={item} />)}
       </header>
     </div>

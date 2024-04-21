@@ -7,6 +7,14 @@ export default defineConfig({
   esbuild: {
     keepNames: true,
   },
+  css: {
+    postcss: {
+      plugins: [     
+        require('tailwindcss'),
+        require('autoprefixer'),
+      ]
+    },
+  },
   optimizeDeps: {
     force: true,
   },
