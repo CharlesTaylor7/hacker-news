@@ -1,4 +1,4 @@
-import React, { memo, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as HN from '../HackerNewsAPI';
 import PollOption from './PollOption';
 import ReactLogo from './ReactLogo';
@@ -77,7 +77,6 @@ const ExpandButton = ({ open, setOpen }) => (
 
 
 const CommentHtml = function({ html }) {
-  useEffect(() => console.log('foo', parse(html)));
   return (
     <>
     {parse(html).map(html => (
