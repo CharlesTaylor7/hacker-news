@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import * as HN from '../HackerNewsAPI';
 import Item from './Item';
 import { SortedMap } from 'immutable-sorted';
-import ReactLogo from './ReactLogo';
 
 
 export const App = () => {
@@ -15,7 +14,7 @@ export const App = () => {
     source.addEventListener("put", (event) => {
       const json = JSON.parse(event.data);
       let end = json.data;
-      let start = previousId.current || (end - 100);
+      let start = previousId.current || (end - 3);
       previousId.current = end;
 
       if (start !== null) {

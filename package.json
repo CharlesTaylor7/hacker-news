@@ -6,10 +6,10 @@
     "start": "vite"
   },
   "dependencies": {
+    "html5parser": "^2.0.2",
     "immutable-sorted": "^0.2.11",
     "react": "^18.0.0",
-    "react-dom": "^18.0.0",
-    "sanitize-html": "^2.13.0"
+    "react-dom": "^18.0.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.1",

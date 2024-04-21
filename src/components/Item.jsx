@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import SanitizeHtml from './SanitizeHtml';
+import React, { memo, useState, useEffect } from 'react';
 import * as HN from '../HackerNewsAPI';
 import PollOption from './PollOption';
 import ReactLogo from './ReactLogo';
+import { parse } from 'html5parser';
+
 
 export default function Item({ item }) {
   const [open, setOpen] = useState(false);
@@ -47,7 +48,7 @@ export default function Item({ item }) {
       {item.url ? <a className="underline decoration-sky-300 visited:decoration-violet-400" href={item.url} target='_blank' rel='no-referrer' >{item.title}</a> : item.title || item.text}
       <br />
       {open && item.title && item.text ? (
-        <SanitizeHtml html={item.text} />
+        <CommentHtml html={item.text} />
       ) : null}
       <div
         className={`ml-2 ${open ? '' : 'hidden'} flex flex-col gap-1`}
@@ -70,3 +71,15 @@ const ExpandButton = ({ open, setOpen }) => (
     {open ? '-' : '+'}
   </button>
 );
+
+
+const CommentHtml = memo (function({ html }) {
+  console.log(parse(html));
+  return (
+    <>
+      {parse(html).map(html => (
+          <div dangerouslySetInnerHTML={{ __html: html.value }} />
+      ))}
+    </>
+  )
+});
