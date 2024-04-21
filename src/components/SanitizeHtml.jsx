@@ -2,7 +2,7 @@ import React from 'react';
 import sanitizeHtml from 'sanitize-html';
 
 const defaultOptions = {
-  allowedTags: ['b', 'i', 'em', 'strong', 'a', 'img'],
+  allowedTags: ['b', 'i', 'em', 'strong', 'a', 'img', 'p'],
   allowedAttributes: {
     a: ['href']
   },
@@ -13,7 +13,8 @@ export default ({ html, options }) => (
   <div
     style={{ display: 'inline' }}
     dangerouslySetInnerHTML={{
-      __html: sanitizeHtml(html, { ...defaultOptions, ...options })
+      __html: html,
+        //sanitizeHtml(html, { ...defaultOptions, ...options })
     }}
   />
 );
