@@ -9,7 +9,6 @@ An alternative frontend to read hackernews. Uses the [public API](https://github
 - Mobile first, but still looks good on desktop.
 
 ## TODO
-- fix child duplication bug
     
 ## Ideas
 - Autoload new comments
