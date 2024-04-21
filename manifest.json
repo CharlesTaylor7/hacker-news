@@ -2,6 +2,6 @@
   "start_url": "/hacker-news",
   "short_name": "HN",
   "name": "Hacker News - Dark Mode",
-  "icons": [{ "src": "favicon.svg", "sizes": "192x192" }],
+  "icons": [{ "src": "favicon.svg", "sizes": "18x18" }],
   "display": "standalone"
 }
