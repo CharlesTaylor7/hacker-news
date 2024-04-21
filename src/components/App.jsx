@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import * as HN from '../HackerNewsAPI';
 import Item from './Item';
 import { SortedMap } from 'immutable-sorted';
+import ReactLogo from './ReactLogo';
 
 
 export const App = () => {
@@ -30,7 +31,7 @@ export const App = () => {
 
   return (
     <div>
-      <header className='p-0 App-header'>
+      <header className='p-0 flex flex-col gap-2'>
         {items.toArray().map(([_, item]) => <Item key={item.id} item={item} />)}
       </header>
     </div>

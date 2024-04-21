@@ -3,9 +3,8 @@ import logo from '../assets/logo.svg';
 
 export default () => (
   <img
+    className='inline h-8 w-8 mx-2'
     src={logo}
-    height='17px'
     alt='logo'
-    style={{ display: 'inline' }}
   />
 );

@@ -43,14 +43,14 @@ export default function Item({ item }) {
 
   return (
     <div data-id={item.id} data-item={JSON.stringify(item)}>
-      <ExpandButton open={open} setOpen={setOpen} />
+      { item.kids || item.parts ? <ExpandButton open={open} setOpen={setOpen} /> : <ReactLogo />}
       {item.url ? <a className="underline decoration-sky-300 visited:decoration-violet-400" href={item.url} target='_blank' rel='no-referrer' >{item.title}</a> : item.title || item.text}
       <br />
       {open && item.title && item.text ? (
         <SanitizeHtml html={item.text} />
       ) : null}
       <div
-        className={`ml-2 ${open ? '' : 'hidden'}`}
+        className={`ml-2 ${open ? '' : 'hidden'} flex flex-col gap-1`}
       >
         {pollOpts}
         {children.map(child => (
@@ -64,7 +64,7 @@ export default function Item({ item }) {
 
 const ExpandButton = ({ open, setOpen }) => (
   <button
-    className='btn btn-primary rounded-full h-8 w-8 m-2 min-h-revert'
+    className='btn btn-primary rounded-full h-8 w-8 mx-2 min-h-revert'
     onClick={() => setOpen(status => !status)}
   >
     {open ? '-' : '+'}
