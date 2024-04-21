@@ -3,11 +3,12 @@ import * as HN from '../HackerNewsAPI';
 import PollOption from './PollOption';
 import ReactLogo from './ReactLogo';
 import { parse } from 'html5parser';
+import { SortedMap } from 'immutable-sorted';
 
 
 export default function Item({ item }) {
   const [open, setOpen] = useState(false);
-  const [children, setChildren] = useState([]);
+  const [children, setChildren] = useState(SortedMap([], (a, b) => b - a));
   const [pollOpts, setPollOpts] = useState([]);
   const kids = item.kids || [];
 
@@ -35,7 +36,7 @@ export default function Item({ item }) {
     for (const childId of kids) {
       HN.getItem(childId).then(item => {
         if (!item || item.deleted) return;
-        setChildren(children => [...children, item]);
+        setChildren(children => children.set(item.id, item));
       });
     }
   }, []);
@@ -50,14 +51,16 @@ export default function Item({ item }) {
       {open && item.title && item.text ? (
         <CommentHtml html={item.text} />
       ) : null}
-      <div
-        className={`ml-2 ${open ? '' : 'hidden'} flex flex-col gap-1`}
-      >
+      { open ?
+      (<div className="ml-2 flex flex-col gap-1" >
         {pollOpts}
-        {children.map(child => (
+        {children.toArray().map(([_, child]) => (
           <Item key={child.id} item={child} />
         ))}
-      </div>
+      </div>)
+        : null
+      }
+  
     </div>
   );
 };
@@ -73,13 +76,13 @@ const ExpandButton = ({ open, setOpen }) => (
 );
 
 
-const CommentHtml = memo (function({ html }) {
-  console.log(parse(html));
+const CommentHtml = function({ html }) {
+  useEffect(() => console.log('foo', parse(html)));
   return (
     <>
-      {parse(html).map(html => (
-          <div dangerouslySetInnerHTML={{ __html: html.value }} />
-      ))}
+    {parse(html).map(html => (
+      <div dangerouslySetInnerHTML={{ __html: html.value }} />
+    ))}
     </>
   )
-});
+};

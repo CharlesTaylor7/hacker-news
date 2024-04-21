@@ -29,10 +29,8 @@ export const App = () => {
   }, []);
 
   return (
-    <div>
-      <header className='p-0 flex flex-col gap-2'>
-        {items.toArray().map(([_, item]) => <Item key={item.id} item={item} />)}
-      </header>
+    <div className='p-0 flex flex-col gap-2'>
+      {items.toArray().map(([_, item]) => <Item key={item.id} item={item} />)}
     </div>
   );
 };
