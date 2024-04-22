@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import * as HN from "../HackerNewsAPI";
 import PollOption from "./PollOption";
 import { SortedMap } from "immutable-sorted";
 
 export default function Item({ item }) {
+  const [orphaned, setOrphaned] = useState(false);
+  const ref = useRef();
   const [open, setOpen] = useState(false);
   const [children, setChildren] = useState(SortedMap([], (a, b) => b - a));
   const [pollOpts, setPollOpts] = useState([]);
+
   useEffect(() => {
     // if item has poll options, get all the poll options simultaneously.
     if (item.parts) {
@@ -37,10 +40,37 @@ export default function Item({ item }) {
       }
     }
   }, []);
-
+  if (orphaned) return null;
   return (
-    <div data-id={item.id} data-item={JSON.stringify(item)}>
+    <div ref={ref} data-id={item.id} data-item={JSON.stringify(item)}>
       <div className="flex">
+        { item.watch ?
+          <button 
+            className="btn btn-sm btn-error"
+            onClick={() => {
+              item.watch = true;
+              setOrphaned(true);
+              document.dispatchEvent(new CustomEvent("bookmark", {detail: item }));
+              getDatabase().then(db => db.transaction(['items'], 'readwrite').objectStore('items').put(item))
+            }}
+          >
+            <span class="material-symbols-outlined">
+              bookmark_remove
+            </span>
+          </button>
+:
+          <button className="btn btn-sm px-2 btn-success"
+            onClick={() => {
+              item.watch = false;
+              setOrphaned(true);
+              document.dispatchEvent(new CustomEvent("unbookmark", {detail: item }));
+            }}
+          >
+            <span class="material-symbols-outlined">
+              bookmark_add
+            </span>
+          </button>
+        }
         <ExpandButton open={open} setOpen={setOpen} />
         {item.url ? (
           <a

@@ -3,7 +3,6 @@ import * as HN from "../HackerNewsAPI";
 import Item from "./Item";
 import { SortedMap } from "immutable-sorted";
 import { getDatabase } from "../storage";
-
 export function App() {
   return (
     <>
@@ -16,6 +15,7 @@ export function App() {
 function WatchItems() {
   const [items, setItems] = useState([]);
   useEffect(() => {
+
     (async function () {
       const db = await getDatabase();
       const request = db
@@ -26,11 +26,16 @@ function WatchItems() {
        .getAll(IDBKeyRange.lowerBound(['true', '0']));
 
       request.addEventListener("success", () => {
-        console.log(request.result);
         setItems(request.result)
       });
       request.addEventListener("error", (event) => console.error(event));
     })();
+    function bookmark(event) {
+      console.log(event);
+      setItems(items => [event.detail, ...items]);
+    }
+    document.addEventListener("bookmark", bookmark);
+    return () => document.removeEventListener("bookmark", bookmark);
   }, []);
 
   return (
