@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import * as HN from "../HackerNewsAPI";
 import PollOption from "./PollOption";
-import ReactLogo from "./ReactLogo";
 import { SortedMap } from "immutable-sorted";
 
 export default function Item({ item }) {
@@ -42,11 +41,7 @@ export default function Item({ item }) {
   return (
     <div data-id={item.id} data-item={JSON.stringify(item)}>
       <div className="flex">
-        {item.kids || item.parts ? (
-          <ExpandButton open={open} setOpen={setOpen} />
-        ) : (
-          <ReactLogo />
-        )}
+        <ExpandButton open={open} setOpen={setOpen} />
         {item.url ? (
           <a
             className="underline decoration-sky-300 visited:decoration-violet-400"

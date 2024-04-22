@@ -19,11 +19,16 @@ function WatchItems() {
     (async function () {
       const db = await getDatabase();
       const request = db
-        .transaction(["watch"], "readonly")
-        .objectStore("watch")
-        .index("time")
-        .getAll();
-      request.addEventListener("success", () => setItems(request.result));
+        .transaction(["items"], "readonly")
+        .objectStore("items")
+        .index("watch, time")
+        //.getKey()
+       .getAll(IDBKeyRange.lowerBound(['true', '0']));
+
+      request.addEventListener("success", () => {
+        console.log(request.result);
+        setItems(request.result)
+      });
       request.addEventListener("error", (event) => console.error(event));
     })();
   }, []);
