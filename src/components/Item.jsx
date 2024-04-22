@@ -57,9 +57,9 @@ export default function Item({ item }) {
             {item.title}
           </a>
         ) : open ? (
-          <p className="whitespace-pre-wrap">{item.text}</p>
+          <span className="whitespace-pre-wrap">{item.text}</span>
         ) : (
-          <span className="inline truncate">{item.text}</span>
+          <span className="truncate">{item.text}</span>
         )}
       </div>
       {open ? (
