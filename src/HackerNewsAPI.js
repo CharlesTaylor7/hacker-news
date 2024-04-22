@@ -5,13 +5,13 @@ const rootURL = "https://hacker-news.firebaseio.com/v0";
 const suffix = ".json";
 
 /**
- * @returns {Promise<Item>}
+ * @returns {Promise<Item|null>}
  */
 export async function getItem(itemId) {
   const item = await fetch(`${rootURL}/item/${itemId}${suffix}`).then(
     (response) => response.json(),
   );
-  if (!item || item.deleted || item.dead) return item;
+  if (!item || item.deleted || item.dead) return null;
 
   const ast = parser.parse(item.text);
   item.text = "";
