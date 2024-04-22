@@ -8,8 +8,6 @@ export default function Item({ item }) {
   const [open, setOpen] = useState(false);
   const [children, setChildren] = useState(SortedMap([], (a, b) => b - a));
   const [pollOpts, setPollOpts] = useState([]);
-  const kids = item.kids || [];
-
   useEffect(() => {
     // if item has poll options, get all the poll options simultaneously.
     if (item.parts) {
@@ -31,11 +29,13 @@ export default function Item({ item }) {
     }
 
     // if item has children, load them in one at a time.
-    for (const childId of kids) {
-      HN.getItem(childId).then((item) => {
-        if (!item) return;
-        setChildren((children) => children.set(item.id, item));
-      });
+    if (item.kids) {
+      for (const childId of item.kids) {
+        HN.getItem(childId).then((item) => {
+          if (!item) return;
+          setChildren((children) => children.set(item.id, item));
+        });
+      }
     }
   }, []);
 
