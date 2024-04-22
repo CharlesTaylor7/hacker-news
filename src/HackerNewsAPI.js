@@ -5,18 +5,14 @@ import { getDatabase, getItemById } from "./storage";
 const rootURL = "https://hacker-news.firebaseio.com/v0";
 const suffix = ".json";
 
- /** @type {IDBDatabase|null} */
-let db = null;
-
 /**
  * @returns {Promise<Item|null>}
  */
 export async function getItem(itemId) {
-  if (!db) {
-    db = await getDatabase();
-  }
+  const db = await getDatabase();
   let item = await getItemById(db, itemId);
-  if (item) return item;
+
+  if (item) return item; 
 
   item = await fetch(`${rootURL}/item/${itemId}${suffix}`).then(
     (response) => response.json(),

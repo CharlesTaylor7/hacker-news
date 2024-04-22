@@ -3,7 +3,7 @@
   */
 export async function getDatabase() {
   return new Promise((resolve, reject) => {
-    const request = window.indexedDB.open("hn", 2);
+    const request = window.indexedDB.open("hn", 1);
     request.addEventListener("error", (e) => reject(e));
     request.addEventListener("success", () => resolve(request.result));
     request.addEventListener("upgradeneeded", () => {
