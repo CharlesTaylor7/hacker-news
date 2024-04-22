@@ -1,27 +1,29 @@
-import * as parser from 'html5parser';
-import * as he from 'he';
+import * as parser from "html5parser";
+import * as he from "he";
 
-const rootURL = 'https://hacker-news.firebaseio.com/v0';
-const suffix = '.json';
+const rootURL = "https://hacker-news.firebaseio.com/v0";
+const suffix = ".json";
 
 /**
  * @returns {Promise<Item>}
  */
 export async function getItem(itemId) {
-  const item = await fetch(`${rootURL}/item/${itemId}${suffix}`).then(response => response.json());
-  if (!item) return item;
+  const item = await fetch(`${rootURL}/item/${itemId}${suffix}`).then(
+    (response) => response.json(),
+  );
+  if (!item || item.deleted || item.dead) return item;
 
   const ast = parser.parse(item.text);
-  item.text = '';
-  parser.walk(ast, { 
+  item.text = "";
+  parser.walk(ast, {
     enter(node) {
-      if (node.type === 'Text') {
+      if (node.type === "Text") {
         item.text += he.decode(node.value);
       }
-      if (node.name === 'p') {
-        item.text += '\n'
+      if (node.name === "p") {
+        item.text += "\n";
       }
-    }
+    },
   });
 
   return item;
@@ -41,11 +43,11 @@ export async function getRoot(id) {
     }
     id = item.parent;
   }
-};
+}
 
 /**
  * A hacker news item. Could be a story, comment, poll, job listing, etc.
-  * https://github.com/HackerNews/API?tab=readme-ov-file#items
+ * https://github.com/HackerNews/API?tab=readme-ov-file#items
  * @typedef {Object} Item
  * @property {number} id - Unique Id
  * @property {boolean} deleted - User deleted

@@ -1,11 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
-import * as HN from '../HackerNewsAPI';
-import Item from './Item';
-import { SortedMap } from 'immutable-sorted';
-import { getDatabase } from '../storage';
+import React, { useState, useRef, useEffect } from "react";
+import * as HN from "../HackerNewsAPI";
+import Item from "./Item";
+import { SortedMap } from "immutable-sorted";
+import { getDatabase } from "../storage";
 
-
-export function App () {
+export function App() {
   return (
     <>
       <WatchItems />
@@ -17,19 +16,25 @@ export function App () {
 function WatchItems() {
   const [items, setItems] = useState([]);
   useEffect(() => {
-    (async function() {
+    (async function () {
       const db = await getDatabase();
-      const request = db.transaction(['watch'], 'readonly').objectStore('watch').index('time').getAll();
-      request.addEventListener('success', () => setItems(request.result));
-      request.addEventListener('error', (event) => console.error(event));
+      const request = db
+        .transaction(["watch"], "readonly")
+        .objectStore("watch")
+        .index("time")
+        .getAll();
+      request.addEventListener("success", () => setItems(request.result));
+      request.addEventListener("error", (event) => console.error(event));
     })();
   }, []);
 
   return (
     <>
       <h2>Saved</h2>
-      <div className='p-0 flex flex-col gap-2'>
-        {items.map((item) => <Item key={item.id} item={item} />)}
+      <div className="p-0 flex flex-col gap-2">
+        {items.map((item) => (
+          <Item key={item.id} item={item} />
+        ))}
       </div>
     </>
   );
@@ -40,19 +45,21 @@ function RecentItems() {
   const [items, setItems] = useState(SortedMap([], (a, b) => b - a));
 
   useEffect(() => {
-    const source = new EventSource('https://hacker-news.firebaseio.com/v0/maxitem.json');
+    const source = new EventSource(
+      "https://hacker-news.firebaseio.com/v0/maxitem.json",
+    );
 
     source.addEventListener("put", (event) => {
       const json = JSON.parse(event.data);
       let end = json.data;
-      let start = previousId.current || (end - 20);
+      let start = previousId.current || end - 20;
       previousId.current = end;
 
       if (start !== null) {
         for (let i = end; i > start; i--) {
-          HN.getRoot(i).then(item => {
+          HN.getRoot(i).then((item) => {
             if (!item || item.dead || item.deleted) return;
-            setItems(elements => elements.set(item.id, item));
+            setItems((elements) => elements.set(item.id, item));
           });
         }
       }
@@ -62,8 +69,10 @@ function RecentItems() {
   return (
     <>
       <h2>Recent</h2>
-      <div className='p-0 flex flex-col gap-2'>
-        {items.toArray().map(([_, item]) => <Item key={item.id} item={item} />)}
+      <div className="p-0 flex flex-col gap-2">
+        {items.toArray().map(([_, item]) => (
+          <Item key={item.id} item={item} />
+        ))}
       </div>
     </>
   );
