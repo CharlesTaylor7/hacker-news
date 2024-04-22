@@ -21,3 +21,15 @@ An alternative frontend to read hackernews. Uses the [public API](https://github
 - Autoload new comments
 - Watch / dismiss threads.
 - mark comments as read / unread
+
+
+## Technical Goals
+I'm trying some new apis / techniques. Not because I know them to be the best fit, but because I want more experience with them.
+
+
+- JS Doc instead of Typescript.
+    - Still plays nice with editor lsp, but no typechecker to configure
+
+- Indexed DB.
+    - A relational db in the browser. Fun!
+
