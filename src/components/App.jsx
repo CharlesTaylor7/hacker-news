@@ -14,13 +14,13 @@ export const App = () => {
     source.addEventListener("put", (event) => {
       const json = JSON.parse(event.data);
       let end = json.data;
-      let start = previousId.current || (end - 3);
+      let start = previousId.current || (end - 20);
       previousId.current = end;
 
       if (start !== null) {
         for (let i = end; i > start; i--) {
           HN.getRoot(i).then(item => {
-            if (!item || item.deleted) return;
+            if (!item || item.dead || item.deleted) return;
             setItems(elements => elements.set(item.id, item));
           });
         }

@@ -35,22 +35,18 @@ export default function Item({ item }) {
     // if item has children, load them in one at a time.
     for (const childId of kids) {
       HN.getItem(childId).then(item => {
-        if (!item || item.deleted) return;
+        if (!item || item.dead || item.deleted) return;
         setChildren(children => children.set(item.id, item));
       });
     }
   }, []);
-
-  if (item.deleted || item.dead) return null;
 
   return (
     <div data-id={item.id} data-item={JSON.stringify(item)}>
       { item.kids || item.parts ? <ExpandButton open={open} setOpen={setOpen} /> : <ReactLogo />}
       {item.url ? <a className="underline decoration-sky-300 visited:decoration-violet-400" href={item.url} target='_blank' rel='no-referrer' >{item.title}</a> : item.title || item.text}
       <br />
-      {open && item.title && item.text ? (
-        <CommentHtml html={item.text} />
-      ) : null}
+      {open && item.title && item.text ? item.text : null}
       { open ?
       (<div className="ml-2 flex flex-col gap-1" >
         {pollOpts}
@@ -74,14 +70,3 @@ const ExpandButton = ({ open, setOpen }) => (
     {open ? '-' : '+'}
   </button>
 );
-
-
-const CommentHtml = function({ html }) {
-  return (
-    <>
-    {parse(html).map(html => (
-      <div dangerouslySetInnerHTML={{ __html: html.value }} />
-    ))}
-    </>
-  )
-};
