@@ -3,27 +3,15 @@
  */
 export async function getDatabase() {
   return new Promise((resolve, reject) => { 
-    const openOrCreateDB = window.indexedDB.open('hn', 1);
+    const request = window.indexedDB.open('hn', 1);
+    request.addEventListener('error', e => reject(e));
+    request.addEventListener('success', () => resolve(request.result));
 
-    openOrCreateDB.addEventListener('error', e => reject(e));
-
-    openOrCreateDB.addEventListener('success', () => {
-      console.log('Successfully opened DB');
-      resolve(openOrCreateDB.result);
-    });
-
-    openOrCreateDB.addEventListener('upgradeneeded', init => {
-      console.log('Upgrade needed', init);
-      const db = init.target.result;
-
-      db.onerror = () => {
-        console.error('Error loading database.');
-      };
-
+    request.addEventListener('upgradeneeded', () => {
+      console.log('Upgrade needed');
+      const db = request.result;
       const table = db.createObjectStore('watch', { keyPath: 'id' });
       table.createIndex('time', 'time', { unique: false });
-
-      resolve(db);
     });
   });
 }

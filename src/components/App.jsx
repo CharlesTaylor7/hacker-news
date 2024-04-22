@@ -2,9 +2,40 @@ import React, { useState, useRef, useEffect } from 'react';
 import * as HN from '../HackerNewsAPI';
 import Item from './Item';
 import { SortedMap } from 'immutable-sorted';
+import { getDatabase } from '../storage';
 
 
-export const App = () => {
+export function App () {
+  return (
+    <>
+      <WatchItems />
+      <RecentItems />
+    </>
+  );
+}
+
+function WatchItems() {
+  const [items, setItems] = useState([]);
+  useEffect(() => {
+    (async function() {
+      const db = await getDatabase();
+      const request = db.transaction(['watch'], 'readonly').objectStore('watch').index('time').getAll();
+      request.addEventListener('success', () => setItems(request.result));
+      request.addEventListener('error', (event) => console.error(event));
+    })();
+  }, []);
+
+  return (
+    <>
+      <h2>Saved</h2>
+      <div className='p-0 flex flex-col gap-2'>
+        {items.map((item) => <Item key={item.id} item={item} />)}
+      </div>
+    </>
+  );
+}
+
+function RecentItems() {
   const previousId = useRef(null);
   const [items, setItems] = useState(SortedMap([], (a, b) => b - a));
 
@@ -29,8 +60,11 @@ export const App = () => {
   }, []);
 
   return (
-    <div className='p-0 flex flex-col gap-2'>
-      {items.toArray().map(([_, item]) => <Item key={item.id} item={item} />)}
-    </div>
+    <>
+      <h2>Recent</h2>
+      <div className='p-0 flex flex-col gap-2'>
+        {items.toArray().map(([_, item]) => <Item key={item.id} item={item} />)}
+      </div>
+    </>
   );
-};
+}

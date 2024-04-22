@@ -1,5 +1,4 @@
 # hacker-news
-
 An alternative frontend to read hackernews. Uses the [public API](https://github.com/HackerNews/API).
 
 ## Goals
