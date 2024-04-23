@@ -13,9 +13,9 @@ export function App() {
 }
 
 function WatchItems() {
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState(null);
+  console.log(items);
   useEffect(() => {
-
     (async function () {
       const db = await getDatabase();
       const request = db
@@ -23,16 +23,21 @@ function WatchItems() {
         .objectStore("items")
         .index("watch")
         //.getKey()
-       .getAll(IDBKeyRange.only(1));
+        .getAll(IDBKeyRange.only(1));
 
       request.addEventListener("success", () => {
-        setItems(request.result)
+        console.log(request.result);
+        setItems(
+          SortedMap(
+            request.result.map((item) => [item.id, item]),
+            (a, b) => b - a,
+          ),
+        );
       });
       request.addEventListener("error", (event) => console.error(event));
     })();
     function bookmark(event) {
-      console.log(event);
-      setItems(items => [event.detail, ...items]);
+      setItems((items) => items.set(event.detail.id, event.detail));
     }
     document.addEventListener("bookmark", bookmark);
     return () => document.removeEventListener("bookmark", bookmark);
@@ -42,9 +47,12 @@ function WatchItems() {
     <>
       <h2>Saved</h2>
       <div className="p-0 flex flex-col gap-2">
-        {items.map((item) => (
-          <Item key={item.id} item={item} />
-        ))}
+        {items &&
+          items
+            .toArray()
+            .map(([_, item]) =>
+              item ? <Item key={item.id} item={item} /> : null,
+            )}
       </div>
     </>
   );
@@ -68,12 +76,18 @@ function RecentItems() {
       if (start !== null) {
         for (let i = end; i > start; i--) {
           HN.getRoot(i).then((item) => {
-            if (!item || item.dead || item.deleted) return;
+            if (!item || item.dead || item.deleted || item.watch) return;
             setItems((elements) => elements.set(item.id, item));
           });
         }
       }
     });
+
+    function unbookmark(event) {
+      setItems((items) => items.set(event.detail.id, event.detail));
+    }
+    document.addEventListener("unbookmark", unbookmark);
+    return () => document.removeEventListener("unbookmark", unbookmark);
   }, []);
 
   return (

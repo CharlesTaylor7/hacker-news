@@ -12,7 +12,7 @@ export default function Item({ item }) {
 
   useEffect(() => {
     // if item has poll options, get all the poll options simultaneously.
-    if (item.parts) {
+    if (item && item.parts) {
       Promise.all(item.parts.map(HN.getItem)).then((allParts) => {
         const totalPollScore = allParts.reduce(
           (total, next) => total + next.score,
@@ -31,7 +31,7 @@ export default function Item({ item }) {
     }
 
     // if item has children, load them in one at a time.
-    if (item.kids) {
+    if (item && item.kids) {
       for (const childId of item.kids) {
         HN.getItem(childId).then((item) => {
           if (!item) return;
@@ -40,38 +40,50 @@ export default function Item({ item }) {
       }
     }
   }, []);
+
   if (orphaned) return null;
   return (
-    <div data-id={item.id} data-item={JSON.stringify(item)}>
+    <div id={item.id} data-item={JSON.stringify(item)}>
       <div className="flex">
-        { item.watch ?
-          <button 
+        {item.parent ? null : item.watch ? (
+          <button
             className="btn btn-sm px-2 btn-error"
             onClick={() => {
               item.watch = 0;
               setOrphaned(true);
-              document.dispatchEvent(new CustomEvent("unbookmark", {detail: item }));
-              getDatabase().then(db => db.transaction(['items'], 'readwrite').objectStore('items').put(item))
+              document.dispatchEvent(
+                new CustomEvent("unbookmark", { detail: item }),
+              );
+              getDatabase().then((db) =>
+                db
+                  .transaction(["items"], "readwrite")
+                  .objectStore("items")
+                  .put(item),
+              );
             }}
           >
-            <span class="material-symbols-outlined">
-              bookmark_remove
-            </span>
+            <span className="material-symbols-outlined">bookmark_remove</span>
           </button>
-:
-          <button className="btn btn-sm px-2 btn-success"
+        ) : (
+          <button
+            className="btn btn-sm px-2 btn-success"
             onClick={() => {
               item.watch = 1;
               setOrphaned(true);
-              document.dispatchEvent(new CustomEvent("bookmark", {detail: item }));
-              getDatabase().then(db => db.transaction(['items'], 'readwrite').objectStore('items').put(item))
+              document.dispatchEvent(
+                new CustomEvent("bookmark", { detail: item }),
+              );
+              getDatabase().then((db) =>
+                db
+                  .transaction(["items"], "readwrite")
+                  .objectStore("items")
+                  .put(item),
+              );
             }}
           >
-            <span class="material-symbols-outlined">
-              bookmark_add
-            </span>
+            <span className="material-symbols-outlined">bookmark_add</span>
           </button>
-        }
+        )}
         <ExpandButton open={open} setOpen={setOpen} />
         {item.url ? (
           <a
@@ -83,9 +95,12 @@ export default function Item({ item }) {
             {item.title}
           </a>
         ) : open ? (
-          <span className="whitespace-pre-wrap">{item.text}</span>
+          <span className="whitespace-pre-wrap">
+            {item.title ? item.title + "\n" : null}
+            {item.text}
+          </span>
         ) : (
-          <span className="truncate">{item.text}</span>
+          <span className="truncate">{item.title || item.text}</span>
         )}
       </div>
       {open ? (

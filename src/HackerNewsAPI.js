@@ -12,13 +12,13 @@ export async function getItem(itemId) {
   const db = await getDatabase();
   let item = await getItemById(db, itemId);
 
-  if (item) return item; 
+  if (item) return item;
 
-  item = await fetch(`${rootURL}/item/${itemId}${suffix}`).then(
-    (response) => response.json(),
+  item = await fetch(`${rootURL}/item/${itemId}${suffix}`).then((response) =>
+    response.json(),
   );
   if (!item || item.deleted || item.dead) return null;
-  
+
   if (item.text) {
     const ast = parser.parse(item.text);
     item.text = "";
@@ -34,7 +34,7 @@ export async function getItem(itemId) {
     });
   }
   item.watch = 0;
-  db.transaction(['items'], 'readwrite').objectStore('items').add(item);
+  db.transaction(["items"], "readwrite").objectStore("items").add(item);
 
   return item;
 }
