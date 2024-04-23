@@ -18,6 +18,8 @@ An alternative frontend to read hackernews. Uses the [public API](https://github
 - Autoload new comments
 - mark comments as read / unread
 - prev, next, and parent buttons / links. (Can these be anchors?)
+- swap items, to ignore them.
+- sort by descendant count
 
 
 ## Technical Goals

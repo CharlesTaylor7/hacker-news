@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import * as HN from "../HackerNewsAPI";
 import PollOption from "./PollOption";
 import { SortedMap } from "immutable-sorted";
 import { getDatabase } from "../storage";
 
 export default function Item({ item }) {
+  const ref = useRef();
   const [orphaned, setOrphaned] = useState(false);
   const [open, setOpen] = useState(false);
   const [children, setChildren] = useState(SortedMap([], (a, b) => b - a));
@@ -43,7 +44,14 @@ export default function Item({ item }) {
 
   if (orphaned) return null;
   return (
-    <div id={item.id} data-item={JSON.stringify(item)}>
+    <div ref={ref} id={item.id} data-item={JSON.stringify(item)}>
+      <span className="flex flex-row gap-2">
+        <a href={`#${ref.current?.previousSibling?.id}`}>Prev</a>
+        &middot;
+        <a href={`#${ref.current?.nextSibling?.id}`}>Next</a>
+        &middot;
+        <a href={`https://news.ycombinator.com/item?id=${item.id}`}>Original</a>
+      </span>
       <div className="flex">
         {item.parent ? null : item.watch ? (
           <button

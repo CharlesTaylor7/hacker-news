@@ -94,7 +94,7 @@ function RecentItems() {
     <>
       <h2>Recent</h2>
       <div className="p-0 flex flex-col gap-2">
-        {items.toArray().map(([_, item]) => (
+        {items.toArray().toSorted((a, b) => b.descendants - a.descendants).map(([_, item]) => (
           <Item key={item.id} item={item} />
         ))}
       </div>
