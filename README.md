@@ -8,9 +8,6 @@ An alternative frontend to read hackernews. Uses the [public API](https://github
 - Read-only view of hacker news. Upvoting, commenting, & submitting are not prioritized.
 
 ## TODO
-- Store content in indexed db.
-- render comments with their formatting. i.e. new lines.
-- collapsing a comment, minimizes the comment text with ellipsis.
 - watch and dismiss comment threads.
 - react router
     - url for each comment thread
@@ -18,17 +15,17 @@ An alternative frontend to read hackernews. Uses the [public API](https://github
 
 ## Ideas
 - Autoload new comments
-- Watch / dismiss threads.
 - mark comments as read / unread
+- prev, next, and parent buttons / links. (Can these be anchors?)
 
 
 ## Technical Goals
-I'm trying some new apis / techniques. Not because I know them to be the best fit, but because I want more experience with them.
+I'm trying some new techniques, to gain experience with them.
 
 
 - JS Doc instead of Typescript.
-    - Still plays nice with editor lsp, but no typechecker to configure
+    - Still plays nice with editor lsp, but no typechecker to configure.
 
 - Indexed DB.
-    - A relational db in the browser. Fun!
+    - A document db in the browser. Fun!
 

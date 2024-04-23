@@ -9,7 +9,7 @@ export async function getDatabase() {
     request.addEventListener("upgradeneeded", () => {
       const db = request.result;
       const table = db.createObjectStore("items", { keyPath: "id" });
-      table.createIndex('watch, time', ['watch', 'time']);
+      table.createIndex('watch#time', ['watch', 'time']);
     });
   });
 }
@@ -20,6 +20,19 @@ export async function getDatabase() {
   * @returns {Promise<Item|null>}
   */
 export async function getItemById(db, itemId) {
+  return new Promise((resolve, reject) => {
+    const request = db.transaction(['items']).objectStore('items').get(itemId);
+    request.addEventListener("error", event => reject(event));
+    request.addEventListener("success", () => resolve(request.result));
+  });
+}
+
+/**
+  * @param {IDBDatabase} db 
+  * @param {number} since - utc time
+  * @returns {Promise<Item|null>}
+  */
+export async function getWatchedItems(db, since = 0) {
   return new Promise((resolve, reject) => {
     const request = db.transaction(['items']).objectStore('items').get(itemId);
     request.addEventListener("error", event => reject(event));
