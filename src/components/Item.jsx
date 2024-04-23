@@ -46,6 +46,8 @@ export default function Item({ item }) {
   return (
     <div ref={ref} id={item.id} data-item={JSON.stringify(item)}>
       <span className="flex flex-row gap-2">
+        <a href={`#${item.parent}`}>Parent</a>
+        &middot;
         <a href={`#${ref.current?.previousSibling?.id}`}>Prev</a>
         &middot;
         <a href={`#${ref.current?.nextSibling?.id}`}>Next</a>
