@@ -7,6 +7,7 @@ An alternative frontend to read hackernews. Uses the [public API](https://github
 - Mobile first, but still looks good on desktop.
 - Read-only view of hacker news. Upvoting, commenting, & submitting are not prioritized.
 
+
 ## TODO
 - watch and dismiss comment threads.
 - react router
@@ -22,10 +23,8 @@ An alternative frontend to read hackernews. Uses the [public API](https://github
 ## Technical Goals
 I'm trying some new techniques, to gain experience with them.
 
-
 - JS Doc instead of Typescript.
     - Still plays nice with editor lsp, but no typechecker to configure.
 
 - Indexed DB.
     - A document db in the browser. Fun!
-

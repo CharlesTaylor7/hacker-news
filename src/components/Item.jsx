@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import * as HN from "../HackerNewsAPI";
 import PollOption from "./PollOption";
 import { SortedMap } from "immutable-sorted";
+import { getDatabase } from "../storage";
 
 export default function Item({ item }) {
   const [orphaned, setOrphaned] = useState(false);
-  const ref = useRef();
   const [open, setOpen] = useState(false);
   const [children, setChildren] = useState(SortedMap([], (a, b) => b - a));
   const [pollOpts, setPollOpts] = useState([]);
@@ -42,15 +42,15 @@ export default function Item({ item }) {
   }, []);
   if (orphaned) return null;
   return (
-    <div ref={ref} data-id={item.id} data-item={JSON.stringify(item)}>
+    <div data-id={item.id} data-item={JSON.stringify(item)}>
       <div className="flex">
         { item.watch ?
           <button 
-            className="btn btn-sm btn-error"
+            className="btn btn-sm px-2 btn-error"
             onClick={() => {
-              item.watch = true;
+              item.watch = 0;
               setOrphaned(true);
-              document.dispatchEvent(new CustomEvent("bookmark", {detail: item }));
+              document.dispatchEvent(new CustomEvent("unbookmark", {detail: item }));
               getDatabase().then(db => db.transaction(['items'], 'readwrite').objectStore('items').put(item))
             }}
           >
@@ -61,9 +61,10 @@ export default function Item({ item }) {
 :
           <button className="btn btn-sm px-2 btn-success"
             onClick={() => {
-              item.watch = false;
+              item.watch = 1;
               setOrphaned(true);
-              document.dispatchEvent(new CustomEvent("unbookmark", {detail: item }));
+              document.dispatchEvent(new CustomEvent("bookmark", {detail: item }));
+              getDatabase().then(db => db.transaction(['items'], 'readwrite').objectStore('items').put(item))
             }}
           >
             <span class="material-symbols-outlined">

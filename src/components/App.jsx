@@ -21,9 +21,9 @@ function WatchItems() {
       const request = db
         .transaction(["items"], "readonly")
         .objectStore("items")
-        .index("watch, time")
+        .index("watch")
         //.getKey()
-       .getAll(IDBKeyRange.lowerBound(['true', '0']));
+       .getAll(IDBKeyRange.only(1));
 
       request.addEventListener("success", () => {
         setItems(request.result)

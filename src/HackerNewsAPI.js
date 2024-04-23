@@ -18,20 +18,22 @@ export async function getItem(itemId) {
     (response) => response.json(),
   );
   if (!item || item.deleted || item.dead) return null;
-
-  const ast = parser.parse(item.text);
-  item.text = "";
-  parser.walk(ast, {
-    enter(node) {
-      if (node.type === "Text") {
-        item.text += he.decode(node.value);
-      }
-      if (node.name === "p") {
-        item.text += "\n";
-      }
-    },
-  });
-  item.watch = false;
+  
+  if (item.text) {
+    const ast = parser.parse(item.text);
+    item.text = "";
+    parser.walk(ast, {
+      enter(node) {
+        if (node.type === "Text") {
+          item.text += he.decode(node.value);
+        }
+        if (node.name === "p") {
+          item.text += "\n";
+        }
+      },
+    });
+  }
+  item.watch = 0;
   db.transaction(['items'], 'readwrite').objectStore('items').add(item);
 
   return item;
