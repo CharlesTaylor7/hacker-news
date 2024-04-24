@@ -1,6 +1,6 @@
 import * as parser from "html5parser";
 import * as he from "he";
-import { getDatabase, getItemById } from "./storage";
+import { getDatabase, getItemById, saveItem } from "./storage";
 
 const rootURL = "https://hacker-news.firebaseio.com/v0";
 const suffix = ".json";
@@ -11,7 +11,7 @@ const suffix = ".json";
 export async function getItem(itemId) {
   const db = await getDatabase();
   let item = await getItemById(db, itemId);
-
+  if (item && item.ignore) return null;
   if (item) return item;
 
   item = await fetch(`${rootURL}/item/${itemId}${suffix}`).then((response) =>
@@ -28,12 +28,12 @@ export async function getItem(itemId) {
           item.text += he.decode(node.value);
         }
         if (node.name === "p") {
-          item.text += "\n";
+          item.text += "\n\n";
         }
       },
     });
   }
-  db.transaction(["items"], "readwrite").objectStore("items").add(item);
+  saveItem(db, item);
 
   return item;
 }

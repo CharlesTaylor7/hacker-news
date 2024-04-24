@@ -44,9 +44,6 @@ export default function Item({ item }) {
 
   if (orphaned) return null;
   const links = [
-    [item.parent, "parent"],
-    [item.parent && ref.current?.previousSibling?.id ? `#${ref.current.previousSibling.id}` : null, "prev"],
-    [item.parent && ref.current?.nextSibling?.id ? `#${ref.current.nextSibling.id}`: null, "next"],
     [`https://news.ycombinator.com/item?id=${item.id}`, "original"],
   ];
   const ignoreButton = (
@@ -59,7 +56,7 @@ export default function Item({ item }) {
         getDatabase().then((db) => saveItem(db, item));
       }}
     >
-      <span className="material-symbols-outlined">bookmark_remove</span>
+      <span className="material-symbols-outlined">block</span>
     </button>
   );
 
@@ -78,10 +75,10 @@ export default function Item({ item }) {
             return i === 0 ? [el] : [sep, el];
           })}
       </span>
-      <div className="flex">
+        <div className="flex">
         {item.parent ? null : item.watch ? (
           <button
-            className="btn btn-sm px-2 btn-error"
+            className="btn btn-sm px-2 btn-warning"
             onClick={() => {
               delete item.watch;
               setOrphaned(true);
@@ -111,7 +108,7 @@ export default function Item({ item }) {
         <ExpandButton open={open} setOpen={setOpen} />
         {item.url ? (
           <a
-            className="underline decoration-sky-300 visited:decoration-violet-400"
+            className="truncate grow shrink underline decoration-sky-300 visited:decoration-violet-400"
             href={item.url}
             target="_blank"
             rel="no-referrer"
@@ -124,9 +121,13 @@ export default function Item({ item }) {
             {item.text}
           </span>
         ) : (
-          <span className="truncate">{item.title || item.text}</span>
+          <span className="truncate grow">{item.title || item.text}</span>
         )}
+    <div className="justify-end">
+      {ignoreButton}
+    </div>
       </div>
+    
       {open ? (
         <div className="ml-2 flex flex-col gap-1">
           {pollOpts}
