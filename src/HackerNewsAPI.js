@@ -33,7 +33,6 @@ export async function getItem(itemId) {
       },
     });
   }
-  item.watch = 0;
   db.transaction(["items"], "readwrite").objectStore("items").add(item);
 
   return item;

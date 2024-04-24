@@ -14,7 +14,6 @@ export function App() {
 
 function WatchItems() {
   const [items, setItems] = useState(null);
-  console.log(items);
   useEffect(() => {
     (async function () {
       const db = await getDatabase();
@@ -26,7 +25,6 @@ function WatchItems() {
         .getAll(IDBKeyRange.only(1));
 
       request.addEventListener("success", () => {
-        console.log(request.result);
         setItems(
           SortedMap(
             request.result.map((item) => [item.id, item]),
@@ -45,7 +43,7 @@ function WatchItems() {
 
   return (
     <>
-      <h2>Saved</h2>
+      <h2>Pinned</h2>
       <div className="p-0 flex flex-col gap-2">
         {items &&
           items
