@@ -43,9 +43,6 @@ export default function Item({ item }) {
   }, []);
 
   if (orphaned) return null;
-  const links = [
-    [`https://news.ycombinator.com/item?id=${item.id}`, "original"],
-  ];
   const ignoreButton = (
     <button
       className="btn btn-sm px-2 btn-error"
@@ -63,17 +60,6 @@ export default function Item({ item }) {
   return (
     <div ref={ref} id={item.id} data-item={JSON.stringify(item)}>
       <span className="flex flex-row gap-2">
-        {links
-          .filter(([href, _]) => href)
-          .flatMap(([href, title], i) => {
-            const el = (
-              <a href={href} className="underline">
-                {title}
-              </a>
-            );
-            const sep = "\u00B7";
-            return i === 0 ? [el] : [sep, el];
-          })}
       </span>
         <div className="flex">
         {item.parent ? null : item.watch ? (
@@ -116,16 +102,14 @@ export default function Item({ item }) {
             {item.title}
           </a>
         ) : open ? (
-          <span className="whitespace-pre-wrap">
+          <span className="grow whitespace-pre-wrap">
             {item.title ? item.title + "\n" : null}
             {item.text}
           </span>
         ) : (
           <span className="truncate grow">{item.title || item.text}</span>
         )}
-    <div className="justify-end">
-      {ignoreButton}
-    </div>
+        {!item.parent && ignoreButton}
       </div>
     
       {open ? (
