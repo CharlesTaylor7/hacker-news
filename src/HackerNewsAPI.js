@@ -16,9 +16,10 @@ export async function getItem(itemId, abortSignal) {
   if (item && item.ignore) return null;
   if (item) return item;
 
-  item = await fetch(`${rootURL}/item/${itemId}${suffix}`, { signal: abortSignal, keepalive: true }).then((response) =>
-    response.json(),
-  );
+  item = await fetch(`${rootURL}/item/${itemId}${suffix}`, {
+    signal: abortSignal,
+    keepalive: true,
+  }).then((response) => response.json());
   if (!item || item.deleted || item.dead) return null;
 
   if (item.text) {

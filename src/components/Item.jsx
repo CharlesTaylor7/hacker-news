@@ -18,7 +18,7 @@ export default function Item(props) {
 
       source.addEventListener("put", (event) => {
         const json = JSON.parse(event.data);
-        setItem(item => ({...item, ...json }));
+        setItem((item) => ({ ...item, ...json }));
         console.log("refresh", item.id);
       });
     }
@@ -42,9 +42,8 @@ export default function Item(props) {
 
   return (
     <div id={item.id} data-item={JSON.stringify(item)}>
-      <span className="flex flex-row gap-2">
-      </span>
-        <div className="flex">
+      <span className="flex flex-row gap-2"></span>
+      <div className="flex">
         {item.parent ? null : item.watch ? (
           <button
             className="btn btn-sm px-2 btn-warning"
@@ -96,10 +95,8 @@ export default function Item(props) {
         )}
         {!item.parent && ignoreButton}
       </div>
-    
-      {open ? (
-        <ItemChildren item={item} />
-      ) : null}
+
+      {open ? <ItemChildren item={item} /> : null}
     </div>
   );
 }
@@ -140,12 +137,12 @@ function ItemChildren({ item }) {
   }, []);
 
   return (
-        <div className="ml-2 flex flex-col gap-1">
-          {pollOpts}
-          {children.toArray().map(([_, child]) => (
-            <Item key={child.id} item={child} />
-          ))}
-        </div>
+    <div className="ml-2 flex flex-col gap-1">
+      {pollOpts}
+      {children.toArray().map(([_, child]) => (
+        <Item key={child.id} item={child} />
+      ))}
+    </div>
   );
 }
 
