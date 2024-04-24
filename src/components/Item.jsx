@@ -44,26 +44,48 @@ export default function Item({ item }) {
 
   if (orphaned) return null;
   const links = [
-    [ item.parent, "parent" ],
-    [ ref.current?.previousSibling?.id, "prev" ],
-    [ ref.current?.nextSibling?.id, "next" ],
-    [ `https://news.ycombinator.com/item?id=${item.id}`, "original" ],
+    [item.parent, "parent"],
+    [ref.current?.previousSibling?.id, "prev"],
+    [ref.current?.nextSibling?.id, "next"],
+    [`https://news.ycombinator.com/item?id=${item.id}`, "original"],
   ];
+  const ignoreButton = (
+    <button
+      className="btn btn-sm px-2 btn-error"
+      onClick={() => {
+        item.ignore = 1;
+        setOrphaned(true);
+        document.dispatchEvent(new CustomEvent("ignore", { detail: item }));
+        getDatabase().then((db) =>
+          db.transaction(["items"], "readwrite").objectStore("items").put(item),
+        );
+      }}
+    >
+      <span className="material-symbols-outlined">bookmark_remove</span>
+    </button>
+  );
+
   return (
     <div ref={ref} id={item.id} data-item={JSON.stringify(item)}>
       <span className="flex flex-row gap-2">
-        {links.filter(([href, _]) => href).flatMap(([href, title], i) => {
-          const el = <a href={href} className="underline">{title}</a>;
-          const sep = '\u00B7';
-          return i === 0 ? [el] : [sep, el];
-        })}
+        {links
+          .filter(([href, _]) => href)
+          .flatMap(([href, title], i) => {
+            const el = (
+              <a href={href} className="underline">
+                {title}
+              </a>
+            );
+            const sep = "\u00B7";
+            return i === 0 ? [el] : [sep, el];
+          })}
       </span>
       <div className="flex">
         {item.parent ? null : item.watch ? (
           <button
             className="btn btn-sm px-2 btn-error"
             onClick={() => {
-              item.watch = 0;
+              delete item.watch;
               setOrphaned(true);
               document.dispatchEvent(
                 new CustomEvent("unbookmark", { detail: item }),
@@ -137,11 +159,3 @@ const ExpandButton = ({ open, setOpen }) => (
     {open ? "-" : "+"}
   </button>
 );
-
-function Link({ href, title }) {
-  if (!href) return null;
-
-  return (
-    <a href={href}>{title}</a>
-  );
-}

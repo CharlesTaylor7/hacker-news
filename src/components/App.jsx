@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import * as HN from "../HackerNewsAPI";
 import Item from "./Item";
 import { SortedMap } from "immutable-sorted";
-import { getDatabase } from "../storage";
+import { getDatabase, getWatchedItems } from "../storage";
 export function App() {
   return (
     <>
@@ -17,22 +17,13 @@ function WatchItems() {
   useEffect(() => {
     (async function () {
       const db = await getDatabase();
-      const request = db
-        .transaction(["items"], "readonly")
-        .objectStore("items")
-        .index("watch")
-        //.getKey()
-        .getAll(IDBKeyRange.only(1));
-
-      request.addEventListener("success", () => {
-        setItems(
-          SortedMap(
-            request.result.map((item) => [item.id, item]),
-            (a, b) => b - a,
-          ),
-        );
-      });
-      request.addEventListener("error", (event) => console.error(event));
+      const items = await getWatchedItems(db);
+      setItems(
+        SortedMap(
+          items.map((item) => [item.id, item]),
+          (a, b) => b - a,
+        ),
+      );
     })();
     function bookmark(event) {
       setItems((items) => items.set(event.detail.id, event.detail));
@@ -92,9 +83,12 @@ function RecentItems() {
     <>
       <h2>Recent</h2>
       <div className="p-0 flex flex-col gap-2">
-        {items.toArray().toSorted((a, b) => b.descendants - a.descendants).map(([_, item]) => (
-          <Item key={item.id} item={item} />
-        ))}
+        {items
+          .toArray()
+          .toSorted((a, b) => b.descendants - a.descendants)
+          .map(([_, item]) => (
+            <Item key={item.id} item={item} />
+          ))}
       </div>
     </>
   );

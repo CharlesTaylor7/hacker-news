@@ -23,7 +23,10 @@ export async function getDatabase() {
  */
 export async function getItemById(db, itemId) {
   return new Promise((resolve, reject) => {
-    const request = db.transaction(["items"]).objectStore("items").get(itemId);
+    const request = db
+      .transaction(["items"], "readonly")
+      .objectStore("items")
+      .get(itemId);
     request.addEventListener("error", (event) => reject(event));
     request.addEventListener("success", () => resolve(request.result));
   });
@@ -31,12 +34,16 @@ export async function getItemById(db, itemId) {
 
 /**
  * @param {IDBDatabase} db
- * @param {number} since - utc time
- * @returns {Promise<Item|null>}
+ * @param {number} itemId
+ * @returns {Promise<Array<Item>|null>}
  */
-export async function getWatchedItems(db, since = 0) {
+export async function getWatchedItems(db) {
   return new Promise((resolve, reject) => {
-    const request = db.transaction(["items"]).objectStore("items").get(itemId);
+    const request = db
+      .transaction(["items"], "readonly")
+      .objectStore("items")
+      .index("watch")
+      .getAll(IDBKeyRange.only(1));
     request.addEventListener("error", (event) => reject(event));
     request.addEventListener("success", () => resolve(request.result));
   });
