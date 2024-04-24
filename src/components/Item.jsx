@@ -4,41 +4,23 @@ import PollOption from "./PollOption";
 import { SortedMap } from "immutable-sorted";
 import { getDatabase, saveItem } from "../storage";
 
-export default function Item({ item }) {
+export default function Item(props) {
   const ref = useRef();
+  const [item, setItem] = useState(props.item);
   const [orphaned, setOrphaned] = useState(false);
   const [open, setOpen] = useState(false);
-  const [children, setChildren] = useState(SortedMap([], (a, b) => b - a));
-  const [pollOpts, setPollOpts] = useState([]);
 
   useEffect(() => {
-    // if item has poll options, get all the poll options simultaneously.
-    if (item && item.parts) {
-      Promise.all(item.parts.map(HN.getItem)).then((allParts) => {
-        const totalPollScore = allParts.reduce(
-          (total, next) => total + next.score,
-          0,
-        );
-        setPollOpts(
-          allParts.map((pollOpt) => (
-            <PollOption
-              key={pollOpt.id}
-              item={pollOpt}
-              totalPollScore={totalPollScore}
-            />
-          )),
-        );
-      });
-    }
+    if (item && item.watch) {
+      const source = new EventSource(
+        `https://hacker-news.firebaseio.com/v0/item/${item.id}.json`,
+      );
 
-    // if item has children, load them in one at a time.
-    if (item && item.kids) {
-      for (const childId of item.kids) {
-        HN.getItem(childId).then((item) => {
-          if (!item) return;
-          setChildren((children) => children.set(item.id, item));
-        });
-      }
+      source.addEventListener("put", (event) => {
+        const json = JSON.parse(event.data);
+        setItem(item => ({...item, ...json }));
+        console.log("refresh", item.id);
+      });
     }
   }, []);
 
@@ -113,14 +95,54 @@ export default function Item({ item }) {
       </div>
     
       {open ? (
+        <ItemChildren item={item} />
+      ) : null}
+    </div>
+  );
+}
+
+function ItemChildren({ item }) {
+  const [children, setChildren] = useState(SortedMap([], (a, b) => b - a));
+  const [pollOpts, setPollOpts] = useState([]);
+
+  useEffect(() => {
+    // if item has poll options, get all the poll options simultaneously.
+    if (item && item.parts) {
+      Promise.all(item.parts.map(HN.getItem)).then((allParts) => {
+        const totalPollScore = allParts.reduce(
+          (total, next) => total + next.score,
+          0,
+        );
+        setPollOpts(
+          allParts.map((pollOpt) => (
+            <PollOption
+              key={pollOpt.id}
+              item={pollOpt}
+              totalPollScore={totalPollScore}
+            />
+          )),
+        );
+      });
+    }
+
+    // if item has children, load them in one at a time.
+    if (item && item.kids) {
+      for (const childId of item.kids) {
+        HN.getItem(childId).then((item) => {
+          if (!item) return;
+          setChildren((children) => children.set(item.id, item));
+        });
+      }
+    }
+  }, []);
+
+  return (
         <div className="ml-2 flex flex-col gap-1">
           {pollOpts}
           {children.toArray().map(([_, child]) => (
             <Item key={child.id} item={child} />
           ))}
         </div>
-      ) : null}
-    </div>
   );
 }
 

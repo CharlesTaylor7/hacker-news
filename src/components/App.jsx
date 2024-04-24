@@ -39,6 +39,7 @@ function WatchItems() {
         {items &&
           items
             .toArray()
+            .toSorted((a, b) => b.descendants - a.descendants)
             .map(([_, item]) =>
               item ? <Item key={item.id} item={item} /> : null,
             )}
@@ -59,7 +60,7 @@ function RecentItems() {
     source.addEventListener("put", (event) => {
       const json = JSON.parse(event.data);
       let end = json.data;
-      let start = previousId.current || end - 20;
+      let start = previousId.current || end - 3;
       previousId.current = end;
 
       if (start !== null) {
