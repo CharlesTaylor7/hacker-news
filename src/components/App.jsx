@@ -80,7 +80,7 @@ function RecentItems() {
     return () => {
       document.removeEventListener("unbookmark", unbookmark);
       source.close();
-    };
+    }
   }, []);
 
   return (

@@ -137,7 +137,7 @@ function ItemChildren({ item }) {
   }, []);
 
   return (
-    <div className="ml-2 flex flex-col gap-1">
+    <div className="ml-4 flex flex-col gap-1">
       {pollOpts}
       {children.toArray().map(([_, child]) => (
         <Item key={child.id} item={child} />
