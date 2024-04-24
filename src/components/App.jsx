@@ -77,7 +77,10 @@ function RecentItems() {
       setItems((items) => items.set(event.detail.id, event.detail));
     }
     document.addEventListener("unbookmark", unbookmark);
-    return () => document.removeEventListener("unbookmark", unbookmark);
+    return () => {
+      document.removeEventListener("unbookmark", unbookmark);
+      source.close();
+    }
   }, []);
 
   return (

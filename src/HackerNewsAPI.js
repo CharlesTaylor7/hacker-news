@@ -6,15 +6,17 @@ const rootURL = "https://hacker-news.firebaseio.com/v0";
 const suffix = ".json";
 
 /**
+ * @param {number} itemId
+ * @param {AbortSignal} abortSignal
  * @returns {Promise<Item|null>}
  */
-export async function getItem(itemId) {
+export async function getItem(itemId, abortSignal) {
   const db = await getDatabase();
   let item = await getItemById(db, itemId);
   if (item && item.ignore) return null;
   if (item) return item;
 
-  item = await fetch(`${rootURL}/item/${itemId}${suffix}`).then((response) =>
+  item = await fetch(`${rootURL}/item/${itemId}${suffix}`, { signal: abortSignal, keepalive: true }).then((response) =>
     response.json(),
   );
   if (!item || item.deleted || item.dead) return null;

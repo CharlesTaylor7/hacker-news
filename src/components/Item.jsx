@@ -7,7 +7,6 @@ import { getDatabase, saveItem } from "../storage";
 export default function Item(props) {
   const ref = useRef();
   const [item, setItem] = useState(props.item);
-  const [orphaned, setOrphaned] = useState(false);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -15,6 +14,7 @@ export default function Item(props) {
       const source = new EventSource(
         `https://hacker-news.firebaseio.com/v0/item/${item.id}.json`,
       );
+      ref.current = source;
 
       source.addEventListener("put", (event) => {
         const json = JSON.parse(event.data);
@@ -24,15 +24,16 @@ export default function Item(props) {
     }
   }, []);
 
-  if (orphaned) return null;
+  if (!item) return null;
   const ignoreButton = (
     <button
       className="btn btn-sm px-2 btn-error"
       onClick={() => {
         item.ignore = 1;
-        setOrphaned(true);
+        setItem(null);
         document.dispatchEvent(new CustomEvent("ignore", { detail: item }));
         getDatabase().then((db) => saveItem(db, item));
+        ref.current.close();
       }}
     >
       <span className="material-symbols-outlined">block</span>
@@ -40,7 +41,7 @@ export default function Item(props) {
   );
 
   return (
-    <div ref={ref} id={item.id} data-item={JSON.stringify(item)}>
+    <div id={item.id} data-item={JSON.stringify(item)}>
       <span className="flex flex-row gap-2">
       </span>
         <div className="flex">
@@ -49,11 +50,12 @@ export default function Item(props) {
             className="btn btn-sm px-2 btn-warning"
             onClick={() => {
               delete item.watch;
-              setOrphaned(true);
+              setItem(null);
               document.dispatchEvent(
                 new CustomEvent("unbookmark", { detail: item }),
               );
               getDatabase().then((db) => saveItem(db, item));
+              ref.current.close();
             }}
           >
             <span className="material-symbols-outlined">bookmark_remove</span>
@@ -63,11 +65,12 @@ export default function Item(props) {
             className="btn btn-sm px-2 btn-success"
             onClick={() => {
               item.watch = 1;
-              setOrphaned(true);
+              setItem(null);
               document.dispatchEvent(
                 new CustomEvent("bookmark", { detail: item }),
               );
               getDatabase().then((db) => saveItem(db, item));
+              ref.current.close();
             }}
           >
             <span className="material-symbols-outlined">bookmark_add</span>
