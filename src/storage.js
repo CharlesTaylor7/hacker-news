@@ -34,7 +34,6 @@ export async function getItemById(db, itemId) {
 
 /**
  * @param {IDBDatabase} db
- * @param {number} itemId
  * @returns {Promise<Array<Item>|null>}
  */
 export async function getWatchedItems(db) {
@@ -44,6 +43,22 @@ export async function getWatchedItems(db) {
       .objectStore("items")
       .index("watch")
       .getAll(IDBKeyRange.only(1));
+    request.addEventListener("error", (event) => reject(event));
+    request.addEventListener("success", () => resolve(request.result));
+  });
+}
+
+/**
+ * @param {IDBDatabase} db
+ * @param {Item} item
+ * @returns {Promise<Array<Item>|null>}
+ */
+export async function saveItem(db, item) {
+  return new Promise((resolve, reject) => {
+    const request = db
+      .transaction(["items"], "readwrite")
+      .objectStore("items")
+      .put(item);
     request.addEventListener("error", (event) => reject(event));
     request.addEventListener("success", () => resolve(request.result));
   });

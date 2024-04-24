@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import * as HN from "../HackerNewsAPI";
 import PollOption from "./PollOption";
 import { SortedMap } from "immutable-sorted";
-import { getDatabase } from "../storage";
+import { getDatabase, saveItem } from "../storage";
 
 export default function Item({ item }) {
   const ref = useRef();
@@ -56,9 +56,7 @@ export default function Item({ item }) {
         item.ignore = 1;
         setOrphaned(true);
         document.dispatchEvent(new CustomEvent("ignore", { detail: item }));
-        getDatabase().then((db) =>
-          db.transaction(["items"], "readwrite").objectStore("items").put(item),
-        );
+        getDatabase().then((db) => saveItem(db, item));
       }}
     >
       <span className="material-symbols-outlined">bookmark_remove</span>
@@ -90,12 +88,7 @@ export default function Item({ item }) {
               document.dispatchEvent(
                 new CustomEvent("unbookmark", { detail: item }),
               );
-              getDatabase().then((db) =>
-                db
-                  .transaction(["items"], "readwrite")
-                  .objectStore("items")
-                  .put(item),
-              );
+              getDatabase().then((db) => saveItem(db, item));
             }}
           >
             <span className="material-symbols-outlined">bookmark_remove</span>
@@ -109,12 +102,7 @@ export default function Item({ item }) {
               document.dispatchEvent(
                 new CustomEvent("bookmark", { detail: item }),
               );
-              getDatabase().then((db) =>
-                db
-                  .transaction(["items"], "readwrite")
-                  .objectStore("items")
-                  .put(item),
-              );
+              getDatabase().then((db) => saveItem(db, item));
             }}
           >
             <span className="material-symbols-outlined">bookmark_add</span>
