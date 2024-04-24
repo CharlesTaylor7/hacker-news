@@ -45,8 +45,8 @@ export default function Item({ item }) {
   if (orphaned) return null;
   const links = [
     [item.parent, "parent"],
-    [ref.current?.previousSibling?.id, "prev"],
-    [ref.current?.nextSibling?.id, "next"],
+    [item.parent && ref.current?.previousSibling?.id ? `#${ref.current.previousSibling.id}` : null, "prev"],
+    [item.parent && ref.current?.nextSibling?.id ? `#${ref.current.nextSibling.id}`: null, "next"],
     [`https://news.ycombinator.com/item?id=${item.id}`, "original"],
   ];
   const ignoreButton = (
